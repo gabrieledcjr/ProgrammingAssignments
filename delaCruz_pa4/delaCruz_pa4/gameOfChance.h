@@ -23,6 +23,7 @@
 #define POINT	-1
 
 #define WINNING_PERCENT_FROM_WAGER 0.5
+#define DICE_NUMBER_OF_ROTATION	   8
 
 #define ERROR_1	"Wager exceeds balance of "
 #define ERROR_2 "Amount cannot be less than or equal to 0"
@@ -53,6 +54,5 @@ void setup (void);
 void printGameRules (void);		// needs to be implemented
 void printTitle (void);
 void introScreen (void);
-
 
 #endif

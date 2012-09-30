@@ -77,12 +77,15 @@ void play (void)
 		printf ("Current Balance: $%.2lf\n", balance);
 		numberOfRolls++;
 
-		if (balance > 0 && playAgain ())
+		if (balance > 0)
 		{
-			playMore = 1;
+			playMore = playAgain ();
 		}
 		else
 		{
+			printf ("You loss\n");
+			printf ("<Press any key to continue>");
+			getch();
 			playMore = 0;
 		}
 
@@ -252,7 +255,7 @@ int playAgain (void)
 	int playMore = 0;
 
 	printf ("Do you want to play more (Y/N)? ");
-	scanf (" %c", &ch);
+	scanf ("\n\n\n%c", &ch);
 
 	if (ch == 'y' || ch == 'Y')
 		playMore = 1;
@@ -264,14 +267,14 @@ void animateDices (int dieOne, int dieTwo)
 {
 	int i = 0;
 
-	for (i = 0; i < 5; i++)
+	for (i = 0; i < DICE_NUMBER_OF_ROTATION; i++)
 	{
 		system ("cls");
 		printTitle ();
 		drawDie (getRandomNumber (6));
 		printf ("\n");
 		drawDie (getRandomNumber (6));
-		Sleep (400);
+		Sleep (300);
 	}
 
 	system ("cls");
@@ -384,7 +387,7 @@ int playANewGame (void)
 	system ("cls");
 	printTitle ();
 	printf ("        PLAY A NEW GAME [Y / N]? ");
-	scanf (" %c", &ch);
+	scanf ("\n%c", &ch);
 
 	if (ch == 'y' || ch == 'Y')
 		status = 1;
@@ -442,7 +445,7 @@ void introScreen (void)
 	printf ("* *                                      *\n");
 	printf ("* ******                                 *\n");
 	printf ("******************************************\n");
-	//Beep (523, 200);
+	Beep (523, 200);
 	Sleep (200);
 	system ("cls");
 	printf ("******************************************\n");
@@ -452,7 +455,7 @@ void introScreen (void)
 	printf ("* *       *    *                         *\n");
 	printf ("* ******  *    *                         *\n");
 	printf ("******************************************\n");
-	//Beep (587, 200);
+	Beep (587, 200);
 	Sleep (200);
 	system ("cls");
 	printf ("******************************************\n");
@@ -462,7 +465,7 @@ void introScreen (void)
 	printf ("* *       *    *  *    *                 *\n");
 	printf ("* ******  *    *  *    *                 *\n");
 	printf ("******************************************\n");
-	// Beep (659, 200);
+	Beep (659, 200);
 	Sleep (200);
 	system ("cls");
 	printf ("******************************************\n");
@@ -472,7 +475,7 @@ void introScreen (void)
 	printf ("* *       *    *  *    *  *              *\n");
 	printf ("* ******  *    *  *    *  *              *\n");
 	printf ("******************************************\n");
-	//Beep (698, 200);
+	Beep (698, 200);
 	Sleep (200);
 	system ("cls");
 	printf ("******************************************\n");
@@ -482,7 +485,7 @@ void introScreen (void)
 	printf ("* *       *    *  *    *  *            * *\n");
 	printf ("* ******  *    *  *    *  *       *****  *\n");
 	printf ("******************************************\n");
-	//Beep (784, 200);
+	Beep (784, 200);
 	Sleep (200);
 	system ("cls");
     printf ("******************************************\n");
@@ -492,7 +495,7 @@ void introScreen (void)
 	printf ("*                                        *\n");
 	printf ("*                                        *\n");
 	printf ("******************************************\n");
-	//Beep (698, 200);
+	Beep (698, 200);
 	Sleep (150);
 	system ("cls");
 	printf ("******************************************\n");
@@ -502,7 +505,7 @@ void introScreen (void)
 	printf ("* *       *    *  *    *  *            * *\n");
 	printf ("* ******  *    *  *    *  *       *****  *\n");
 	printf ("******************************************\n");
-	//Beep (784, 200);
+	Beep (784, 200);
 	Sleep (200);
 	system ("cls");
 	printf ("******************************************\n");
@@ -514,6 +517,6 @@ void introScreen (void)
 	printf ("******************************************\n");
 	printf ("\n");
 	printf ("***  PRESS ANY KEY TO START THE GAME   ***\n");
-	//Beep (698, 200);
+	Beep (698, 200);
 	getch ();		
 }
