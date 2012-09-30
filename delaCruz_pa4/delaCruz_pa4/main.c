@@ -1,28 +1,35 @@
 #include "gameOfChance.h"
 
 
-
 int main (void)
 {	
-	int playGame = 0;
+	int isPlay = FALSE;
+	char option = '\0';
+
+	setup ();
 
 	do
 	{
-		setup ();
-		playGame = playANewGame ();
+		option = printMenu ();
 
-		if (playGame == 1)
-			play ();
+		switch (option)
+		{
+			case START_NEW_GAME:
+				play ();
+				isPlay = TRUE;
+				break;
 
-	} while (playGame);
+			case HOW_TO_PLAY:
+				printGameRules ();
+				isPlay = TRUE;
+				break;
+
+			case EXIT_GAME:
+				isPlay = FALSE;
+				break;
+		}
+
+	} while (isPlay);
 
 	return 0;
 }
-
-
-	
-	/* As the game progresses, print various messages to create some "chatter" such as, 
-	   "Sorry, you busted!", 
-	   or "Oh, you're going for broke, huh?", 
-	   or "Aw cmon, take a chance!", 
-	   or "You're up big, now's the time to cash in your chips!" */

@@ -11,6 +11,10 @@
 #define TRUE	1
 #define FALSE	0
 
+#define START_NEW_GAME  '1'
+#define HOW_TO_PLAY		'2'
+#define EXIT_GAME       '3'
+
 #define ONE		1
 #define TWO		2
 #define THREE	3
@@ -22,12 +26,13 @@
 #define WINS	1
 #define POINT	-1
 
-#define WINNING_PERCENT_FROM_WAGER 0.5
-#define DICE_NUMBER_OF_ROTATION	   8
+#define WINNING_WAGER_MULTIPLIER	2
+#define DICE_NUMBER_OF_ROTATION		5
 
 #define ERROR_1	"Wager exceeds balance of "
 #define ERROR_2 "Amount cannot be less than or equal to 0"
 
+                        
 void play (void);
 double adjustBankBalance (double balance, double wager, int addOrSubtract);
 int isPointLossOrNeither (int sumDice, int playerPoint);
@@ -37,6 +42,8 @@ int rollDie (void);
 int checkWagerAmount (double wager, double balance);
 double getWagerAmount (void);
 double getBankBalance (void);
+void chatterMessages (int numberRolls, int winLossNeither, 
+	                  double initialBankBalance, double currentBankBalance);
 
 void animateDices (int dieOne, int dieTwo);
 void drawDie (int number);
@@ -48,10 +55,9 @@ void diceFive (void);
 void diceSix (void);
 int getRandomNumber (int maxNumber);
 
-int playANewGame (void);
-
 void setup (void);
-void printGameRules (void);		// needs to be implemented
+char printMenu (void);
+void printGameRules (void);		
 void printTitle (void);
 void introScreen (void);
 

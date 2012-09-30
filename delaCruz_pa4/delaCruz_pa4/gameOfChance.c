@@ -3,9 +3,12 @@
 void play (void)
 {
 	int dieOne = 0, dieTwo = 0,
-		sumDice = 0, playerPoint = 0,
-		gameStatus = 0, numberOfRolls = 0,
+		sumDice = 0, 
+		playerPoint = 0,
+		gameStatus = 0, 
+		numberOfRolls = 0,
 		playMore = 0;
+
 	double initialBankBalance = 0.0,
 		   balance = 0.0,
 		   wager = 0.0;
@@ -74,18 +77,20 @@ void play (void)
 
 		/* Once a game is lost or won, the bank balance should be adjusted. */
 		balance = adjustBankBalance (balance, wager, gameStatus);
-		printf ("Current Balance: $%.2lf\n", balance);
+		//printf ("Current Balance: $%.2lf\n", balance);
+		/* Keeps track of the number of plays */
 		numberOfRolls++;
+
+		chatterMessages (numberOfRolls, gameStatus, initialBankBalance, balance);
+		printf ("<Press any key to continue>");
+		getch();
 
 		if (balance > 0)
 		{
-			playMore = playAgain ();
+			playMore = playAgain (balance);
 		}
 		else
 		{
-			printf ("You loss\n");
-			printf ("<Press any key to continue>");
-			getch();
 			playMore = 0;
 		}
 
@@ -107,7 +112,7 @@ double adjustBankBalance (double balance, double wager, int addOrSubtract)
 	switch (addOrSubtract)
 	{
 		case WINS:
-			balance += wager + (floor (wager) * WINNING_PERCENT_FROM_WAGER);
+			balance += (wager * WINNING_WAGER_MULTIPLIER);
 			break;
 		case CRAPS:
 			balance -= wager;
@@ -246,14 +251,59 @@ double getBankBalance (void)
 	return initBankBalance;
 }
 
+/*
+Prints an appropriate message dependent on the number of 
+rolls taken so far by the player, the current balance, 
+and whether or not the player just won his roll. The 
+parameter win_loss_neither indicates the result of the 
+previous roll.
+*/
+void chatterMessages (int numberRolls, int winLossNeither, 
+	                  double initialBankBalance, double currentBankBalance)
+{
+	/* As the game progresses, print various messages to create some "chatter" such as, 
+	   "Sorry, you busted!",					winLossNeither = 0 && currentBalance == 0
+	   or "Oh, you're going for broke, huh?",	winLossNeight = 0  && currentBankBalance < initialBalance * .5
+	   or "Aw cmon, take a chance!",			winLossNeither = 1 && currentBankBalance > initialBalance * .5 && currentBankBalance < initialBalance
+	   or "You're up big, now's the time to cash in your chips!", (winLossNeither = 0) && currentBankBalance > initialBankBalance */
+	if (winLossNeither == WINS)
+	{
+		printf ("ROMNEY: You are a lucky bastard! I need you in my election committee.\n");
+
+	}
+	else 
+	{
+		printf ("OBAMA: Your such a Loser! Your bad luck, stay away from me...\n");
+	}
+
+	if (winLossNeither == 0 && currentBankBalance == 0)
+	{
+		printf ("Sorry, you busted!\n");
+	}
+	else if (winLossNeither == 0 && currentBankBalance < (initialBankBalance * .5))
+	{
+		printf ("Oh, you're going for broke, huh?\n");
+	}
+	else if (winLossNeither == 1 && currentBankBalance > (initialBankBalance * .5) && currentBankBalance < initialBankBalance)
+	{
+		printf ("Aw c'mon, take a chance!\n");
+	}
+	else if (winLossNeither == 0 && currentBankBalance > initialBankBalance)
+	{
+		printf ("You're up big, now's the time to cash in your chips!\n");
+	}
+}
 
 /* UTILITY FUNCTIONS */
 
-int playAgain (void)
+int playAgain (double currentBalance)
 {
 	char ch = '\0';
 	int playMore = 0;
 
+	system ("cls");
+	printTitle ();
+	printf ("Current Balance: $%.2lf\n", currentBalance);
 	printf ("Do you want to play more (Y/N)? ");
 	scanf ("\n\n\n%c", &ch);
 
@@ -274,6 +324,7 @@ void animateDices (int dieOne, int dieTwo)
 		drawDie (getRandomNumber (6));
 		printf ("\n");
 		drawDie (getRandomNumber (6));
+		Beep (523, 300);
 		Sleep (300);
 	}
 
@@ -283,6 +334,7 @@ void animateDices (int dieOne, int dieTwo)
 	printf ("\n");
 	drawDie (dieTwo);
 	printf ("\n");
+	Beep (659, 200);
 }
 
 void drawDie (int number)
@@ -378,23 +430,6 @@ int getRandomNumber (int maxNumber)
 	return number;
 }
 
-
-int playANewGame (void)
-{
-	char ch = '\0';
-	int status = 0;
-
-	system ("cls");
-	printTitle ();
-	printf ("        PLAY A NEW GAME [Y / N]? ");
-	scanf ("\n%c", &ch);
-
-	if (ch == 'y' || ch == 'Y')
-		status = 1;
-
-	return status;
-}
-
 /* SETUP FUNCTIONS */
 
 void setup (void)
@@ -403,14 +438,38 @@ void setup (void)
 
 	/* Animated welcome screen is displayed on the screen  */
 	introScreen ();
+}
 
-	/* Prints the Rules of the Game */
-	printGameRules ();
+char printMenu (void)
+{
+	char option = '\0';
+
+	do {
+		system ("cls");
+		printTitle ();
+		printf ("       [ 1 ] START A NEW GAME\n");
+		printf ("       [ 2 ] HOW TO PLAY CRAPS\n");
+		printf ("       [ 3 ] EXIT GAME\n\n");
+		printf ("       CHOOSE OPTION: ");
+		option = getchar ();
+	} while (option < '1' || option > '3');
+
+	return option;
 }
 
 void printGameRules (void)
 {
-
+	system ("cls");
+	printTitle ();
+	printf ("              HOW TO PLAY\n");
+	printf ("> Player rolls two dice\n");
+	printf ("> After the dice have come to rest, the\n  sum of the spots on the two upward faces\n  is calculated.\n");
+	printf ("> If the sum is 7 or 11 on the first throw,\n  the PLAYER WINS!\n");
+	printf ("> If the sum is 2, 3 or 12 on the first\n  throw, CRAPS... The PLAYER LOSES!\n");
+	printf ("> If the sum is 4, 5, 6, 8, 9, or 10 on\n  the first throw, then the sum becomes\n  the PLAYER'S POINT.\n");
+	printf ("> To win, you must continue rolling the\n  dice until you make your POINT. The\n  player loses by rolling a 7 before\n  making the point.\n");
+	printf ("       <Press any key to continue>");
+	getch ();
 }
 
 void printTitle (void)
@@ -516,7 +575,7 @@ void introScreen (void)
 	printf ("* ******  *    *  *    *  *       *****  *\n");
 	printf ("******************************************\n");
 	printf ("\n");
-	printf ("***  PRESS ANY KEY TO START THE GAME   ***\n");
+	//printf ("***  PRESS ANY KEY TO START THE GAME   ***\n");
 	Beep (698, 200);
-	getch ();		
+	//getch ();		
 }
