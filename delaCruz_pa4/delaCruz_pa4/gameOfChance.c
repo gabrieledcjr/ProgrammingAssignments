@@ -53,7 +53,7 @@ void play (void)
 				{
 					printf ("Continue rolling the dice until you get a sum of %d\n", playerPoint);
 					printf ("<Press any key to roll the dice>\n");
-					getch();
+					getch ();
 					dieOne = rollDie ();
 					dieTwo = rollDie ();
 					animateDices (dieOne, dieTwo);
@@ -264,14 +264,14 @@ void animateDices (int dieOne, int dieTwo)
 {
 	int i = 0;
 
-	for (i = 0; i < 15; i++)
+	for (i = 0; i < 5; i++)
 	{
 		system ("cls");
 		printTitle ();
 		drawDie (getRandomNumber (6));
 		printf ("\n");
 		drawDie (getRandomNumber (6));
-		Sleep (200);
+		Sleep (400);
 	}
 
 	system ("cls");
@@ -375,6 +375,23 @@ int getRandomNumber (int maxNumber)
 	return number;
 }
 
+
+int playANewGame (void)
+{
+	char ch = '\0';
+	int status = 0;
+
+	system ("cls");
+	printTitle ();
+	printf ("        PLAY A NEW GAME [Y / N]? ");
+	scanf (" %c", &ch);
+
+	if (ch == 'y' || ch == 'Y')
+		status = 1;
+
+	return status;
+}
+
 /* SETUP FUNCTIONS */
 
 void setup (void)
@@ -408,7 +425,7 @@ void printTitle (void)
 
 void introScreen (void)
 {
-	system ("cls");
+	system ("cls"); /* for MAC change to system("clear"); */
     printf ("******************************************\n");
 	printf ("*                                        *\n");
 	printf ("*                                        *\n");
@@ -425,7 +442,7 @@ void introScreen (void)
 	printf ("* *                                      *\n");
 	printf ("* ******                                 *\n");
 	printf ("******************************************\n");
-	Beep (523, 200);
+	//Beep (523, 200);
 	Sleep (200);
 	system ("cls");
 	printf ("******************************************\n");
@@ -435,7 +452,7 @@ void introScreen (void)
 	printf ("* *       *    *                         *\n");
 	printf ("* ******  *    *                         *\n");
 	printf ("******************************************\n");
-	Beep (587, 200);
+	//Beep (587, 200);
 	Sleep (200);
 	system ("cls");
 	printf ("******************************************\n");
@@ -445,7 +462,7 @@ void introScreen (void)
 	printf ("* *       *    *  *    *                 *\n");
 	printf ("* ******  *    *  *    *                 *\n");
 	printf ("******************************************\n");
-	Beep (659, 200);
+	// Beep (659, 200);
 	Sleep (200);
 	system ("cls");
 	printf ("******************************************\n");
@@ -455,7 +472,7 @@ void introScreen (void)
 	printf ("* *       *    *  *    *  *              *\n");
 	printf ("* ******  *    *  *    *  *              *\n");
 	printf ("******************************************\n");
-	Beep (698, 200);
+	//Beep (698, 200);
 	Sleep (200);
 	system ("cls");
 	printf ("******************************************\n");
@@ -465,7 +482,7 @@ void introScreen (void)
 	printf ("* *       *    *  *    *  *            * *\n");
 	printf ("* ******  *    *  *    *  *       *****  *\n");
 	printf ("******************************************\n");
-	Beep (784, 200);
+	//Beep (784, 200);
 	Sleep (200);
 	system ("cls");
     printf ("******************************************\n");
@@ -475,8 +492,8 @@ void introScreen (void)
 	printf ("*                                        *\n");
 	printf ("*                                        *\n");
 	printf ("******************************************\n");
-	Beep (698, 200);
-	Sleep (200);
+	//Beep (698, 200);
+	Sleep (150);
 	system ("cls");
 	printf ("******************************************\n");
 	printf ("* ******  *****    ****   *****    ***** *\n");
@@ -485,7 +502,7 @@ void introScreen (void)
 	printf ("* *       *    *  *    *  *            * *\n");
 	printf ("* ******  *    *  *    *  *       *****  *\n");
 	printf ("******************************************\n");
-	Beep (784, 200);
+	//Beep (784, 200);
 	Sleep (200);
 	system ("cls");
 	printf ("******************************************\n");
@@ -497,7 +514,6 @@ void introScreen (void)
 	printf ("******************************************\n");
 	printf ("\n");
 	printf ("***  PRESS ANY KEY TO START THE GAME   ***\n");
-	Beep (698, 200);
-	getch ();
-	system ("cls");			/* for MAC change to system("clear"); */
+	//Beep (698, 200);
+	getch ();		
 }

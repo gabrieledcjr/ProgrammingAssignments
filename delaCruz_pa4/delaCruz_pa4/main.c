@@ -4,32 +4,21 @@
 
 int main (void)
 {	
-	while (TRUE)
+	int playGame = 0;
+
+	do
 	{
 		setup ();
-		play ();
-	
-		break;
-	}
+		playGame = playANewGame ();
+
+		if (playGame == 1)
+			play ();
+
+	} while (playGame);
 
 	return 0;
 }
 
-
-	/*
-	  RULES:
-	  
-	  - 
-	  - 
-	  -
-	  - 
-	  - 
-	  - 
-	 */
-
-
-
-	/* Write a program that implements a craps game according to the above rules. */
 
 	
 	/* As the game progresses, print various messages to create some "chatter" such as, 

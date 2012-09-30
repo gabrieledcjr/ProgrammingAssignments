@@ -47,6 +47,8 @@ void diceFive (void);
 void diceSix (void);
 int getRandomNumber (int maxNumber);
 
+int playANewGame (void);
+
 void setup (void);
 void printGameRules (void);		// needs to be implemented
 void printTitle (void);
