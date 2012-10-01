@@ -1,5 +1,43 @@
+/*************************************************************************
+ * Filename: gameOfChance.c                                              *
+ * Programmer: Gabriel V. de a Cruz Jr.                                  *
+ * Class: CptS 121, Fall 2012  ; Lab Section 7                           *
+ * Programming Assignment 4: A Game of Chance "Craps"                    *
+ * Date: September 30, 2012                                              *
+ *                                                                       *
+ * Description: This program implements a craps game according to the    *
+ *              rules below. This file includes all the function         *
+ *              definitions whose prototypes, standard libraries and     *
+ *              constant macros are declared in the file gameOfChance.h  *
+ *                                                                       *
+ * Rules of the Game:													 *
+ *   1) A player rolls two dice.                                         *
+ *   2) Each die has six faces. These faces contain 1, 2, 3, 4, 5, and   *
+ *      6 spots.                                                         *
+ *   3) After the dice have come to rest, the sum of the spots on the    *
+ *      two upward faces is calculated.                                  *
+ *   4) If the sum is 7 or 11 on the first throw, the player wins.       *
+ *   5) If the sum is 2, 3, or 12 on the first throw (called "craps"),   *
+ *      the player loses (i.e. the "house" wins).                        *
+ *   6) If the sum is 4, 5, 6, 8, 9, or 10 on the first throw, then the  *
+ *      sum becomes the player's "point."                                *
+ *   7) To win, you must continue rolling the dice until you "make your  *
+ *      point." The player loses by rolling a 7 before making the point. *
+ *************************************************************************/
 #include "gameOfChance.h"
 
+/*************************************************************
+ * Function: play ()                                         *
+ * Date Created: September 29, 2012                          *
+ * Date Last Modified: September 30, 2012                    *
+ * Description: This function is the main function called to *
+ *              start a game of craps.                       *
+ * Input parameters: void                                    *
+ * Returns: void                                             *
+ * Preconditions: User knows the rules of the game of craps  *
+ * Postconditions: User has doesn't want to continue playing *
+ *                 or player is bankrupt.                    *
+ *************************************************************/
 void play (void)
 {
 	int dieOne = 0, dieTwo = 0,
@@ -32,12 +70,14 @@ void play (void)
 
 		/* A player rolls two dice. */
 		printf ("<Press Enter to roll the dice>");
-		getchar ();
+		getch ();
+
+		/* Gets two random values from 1-6, and are saved on the variables dieOne and dieTwo */
 		dieOne = rollDie ();
 		dieTwo = rollDie ();
-		animateDices (dieOne, dieTwo);
 
-		//printf ("Die 1: %d, Die 2: %d\n", dieOne, dieTwo);
+		/* Shows in the screen two animated die and then the the actual values of the dice */
+		animateDices (dieOne, dieTwo);
 
 		/* After the dice have come to rest, the sum of the spots on the two upward faces is calculated. */
 		sumDice = calculateSumDice (dieOne, dieTwo);
@@ -79,13 +119,13 @@ void play (void)
 
 		/* Once a game is lost or won, the bank balance should be adjusted. */
 		balance = adjustBankBalance (balance, wager, gameStatus);
-		//printf ("Current Balance: $%.2lf\n", balance);
+		
 		/* Keeps track of the number of plays */
 		numberOfRolls++;
 
 		chatterMessages (numberOfRolls, gameStatus, initialBankBalance, balance);
 		printf ("<Press Enter to continue>");
-		getchar ();
+		getch ();
 
 		if (balance > 0)
 		{
@@ -471,7 +511,7 @@ void printGameRules (void)
 	printf ("> If the sum is 4, 5, 6, 8, 9, or 10 on\n  the first throw, then the sum becomes\n  the PLAYER'S POINT.\n");
 	printf ("> To win, you must continue rolling the\n  dice until you make your POINT. The\n  player loses by rolling a 7 before\n  making the point.\n");
 	printf ("       <Press Enter to continue>");
-	getchar ();
+	getch ();
 }
 
 void printTitle (void)
