@@ -14,7 +14,7 @@
  *              adjusted. As the game progresses, print various messages *
  *              to create some "chatter."                                *
  *                                                                       *
- * Rules of the Game:													 *
+ * Rules of the Game:                                                    *
  *   1) A player rolls two dice.                                         *
  *   2) Each die has six faces. These faces contain 1, 2, 3, 4, 5, and   *
  *      6 spots.                                                         *

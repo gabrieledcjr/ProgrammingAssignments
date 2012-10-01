@@ -10,7 +10,7 @@
  *              definitions whose prototypes, standard libraries and     *
  *              constant macros are declared in the file gameOfChance.h  *
  *                                                                       *
- * Rules of the Game:													 *
+ * Rules of the Game:                                                    *
  *   1) A player rolls two dice.                                         *
  *   2) Each die has six faces. These faces contain 1, 2, 3, 4, 5, and   *
  *      6 spots.                                                         *
@@ -53,10 +53,11 @@ void play (void)
 
 	char escape = '\0';
 
-	/* The game should allow for wagering. */
-	/* This means that you need to prompt that user for an initial bank balance 
-	   from which wagers will be added or subtracted. Before each roll prompt the 
-	   user for a wager. */
+	/* The game should allow for wagering. 
+	   This means that you need to prompt that 
+	   user for an initial bank balance from which 
+	   wagers will be added or subtracted. Before 
+	   each roll prompt the user for a wager. */
 	initialBankBalance = getBankBalance ();
 	balance = initialBankBalance;
 	
@@ -72,25 +73,32 @@ void play (void)
 		printf ("<Press Enter to roll the dice>");
 		getch ();
 
-		/* Gets two random values from 1-6, and are saved on the variables dieOne and dieTwo */
+		/* Gets two random values from 1-6, and are 
+		   saved on the variables dieOne and dieTwo */
 		dieOne = rollDie ();
 		dieTwo = rollDie ();
 
-		/* Shows in the screen two animated die and then the the actual values of the dice */
+		/* Shows in the screen two animated die and 
+		   then the the actual values of the dice */
 		animateDices (dieOne, dieTwo);
 
-		/* After the dice have come to rest, the sum of the spots on the two upward faces is calculated. */
+		/* After the dice have come to rest, the sum 
+		   of the spots on the two upward faces is 
+		   calculated. */
 		sumDice = calculateSumDice (dieOne, dieTwo);
 
 		switch (isWinLossOrPoint (sumDice))
 		{
 			case WINS:
-				/* If the sum is 7 or 11 on the first throw, the player wins. */
+				/* If the sum is 7 or 11 on the first throw, 
+				   the player wins. */
 				gameStatus = WINS;
 				break;
 
 			case POINT:
-				/* If the sum is 4, 5, 6, 8, 9, or 10 on the first throw, then the sum becomes the player's "point." */
+				/* If the sum is 4, 5, 6, 8, 9, or 10 on the 
+				   first throw, then the sum becomes the player's 
+				   "point." */
 				gameStatus = POINT;
 				playerPoint = sumDice;
 
@@ -112,12 +120,15 @@ void play (void)
 				break;
 
 			case CRAPS:
-				/* If the sum is 2, 3, or 12 on the first throw (called "craps"), the player loses (i.e. the "house" wins). */
+				/* If the sum is 2, 3, or 12 on the first throw 
+				   (called "craps"), the player loses (i.e. the 
+				   "house" wins). */
 				gameStatus = CRAPS;
 				break;
 		}
 
-		/* Once a game is lost or won, the bank balance should be adjusted. */
+		/* Once a game is loss or won, the bank 
+		   balance should be adjusted. */
 		balance = adjustBankBalance (balance, wager, gameStatus);
 		
 		/* Keeps track of the number of plays */
@@ -144,11 +155,24 @@ void play (void)
 
 /* PLAY FUNCTIONS */
 
-/*
-If add_or_subtract is 1, then the wager amount is added to the bank_balance. 
-If add_or_subtract is 0, then the wager amount is subtracted from the bank_balance. 
-Otherwise, the bank_balance remains the same. The bank_balance result is returned.
-*/
+/*************************************************************
+ * Function: adjustBankBalance ()                            *
+ * Date Created: September 29, 2012                          *
+ * Date Last Modified: September 30, 2012                    *
+ * Description: This function, if addOrSubtract is 1, then   *
+ *              the wager amount is added to the balance. If *
+ *              addOrSubtract is 0, then the wager amount is *
+ *              subtracted from the balance. Otherwise, the  *
+ *              balance remains the same. The balance result *
+ *              is returned.                                 *
+ * Input parameters: current balance, wager, indicator if    *
+ *                   player wins or craps                    *
+ * Returns: adjusted balance                                 *
+ * Preconditions: balance is non-zero, wager is not bigger   *
+ *                than balance, correct value if player won  *
+ *                or loss.                                   *
+ * Postconditions: adjusted balanced is returned             *
+ *************************************************************/
 double adjustBankBalance (double balance, double wager, int addOrSubtract) 
 {
 	switch (addOrSubtract)
@@ -164,23 +188,34 @@ double adjustBankBalance (double balance, double wager, int addOrSubtract)
 	return balance;
 }
 
-/*
-Determines the result of any successive roll after the first roll. 
-If the sum of the roll is the point_value, then 1 is returned. 
-If the sum of the roll is a 7, then 0 is returned. Otherwise, -1 is returned.
-*/
+/*************************************************************
+ * Function: adjustBankBalance ()                            *
+ * Date Created: September 29, 2012                          *
+ * Date Last Modified: September 30, 2012                    *
+ * Description: This function determines the result of any   *
+ *              successive roll after the first roll. If the *
+ *              sum of the roll is the playerPoint, then 1   *
+ *              is returned. If the sum of the roll is a 7,  *
+ *              then 0 is returned. Otherwise, -1 is         *
+ *              returned.                                    *
+ * Input parameters: sum of the two die, sum of the first    *
+ *                   roll known as the "point"               *
+ * Returns: indicator if player loss or wins or neither      *
+ * Preconditions: sum of the two die rolled are computed     *
+ *                with correct values and the sum of the     *
+ *                first roll or point is accurate            *
+ * Postconditions: indicator if it's a point, loss or win    *
+ *************************************************************/
 int isPointLossOrNeither (int sumDice, int playerPoint)
 {
 	int status = POINT;
 
 	if (sumDice == 7)
 	{
-		/* The player loses by rolling a 7 before making the point. */
 		status = CRAPS;
 	}
 	else if (sumDice == playerPoint)
 	{
-		/* To win, you must continue rolling the dice until you "make your point."  */
 		status = WINS;
 	}
 
@@ -303,11 +338,6 @@ previous roll.
 void chatterMessages (int numberRolls, int winLossNeither, 
 	                  double initialBankBalance, double currentBankBalance)
 {
-	/* As the game progresses, print various messages to create some "chatter" such as, 
-	   "Sorry, you busted!",					winLossNeither = 0 && currentBalance == 0
-	   or "Oh, you're going for broke, huh?",	winLossNeight = 0  && currentBankBalance < initialBalance * .5
-	   or "Aw cmon, take a chance!",			winLossNeither = 1 && currentBankBalance > initialBalance * .5 && currentBankBalance < initialBalance
-	   or "You're up big, now's the time to cash in your chips!", (winLossNeither = 0) && currentBankBalance > initialBankBalance */
 	if (winLossNeither == WINS)
 	{
 		printf ("ROMNEY: You are a lucky bastard! I need you in my election committee.\n");
@@ -474,6 +504,19 @@ int getRandomNumber (int maxNumber)
 
 /* SETUP FUNCTIONS */
 
+/*************************************************************
+ * Function: setup ()                                        *
+ * Date Created: September 29, 2012                          *
+ * Date Last Modified: September 30, 2012                    *
+ * Description: This function initializes the srand () to be *
+ *              to get random numbers to simulate values     *
+ *              rolling a die. It also calls introScreen ()  *
+ * Input parameters: void                                    *
+ * Returns: void                                             *
+ * Preconditions: time.h included for time ()                *
+ * Postconditions: srand () initiated and title shown on     *
+ *                 screen                                    *
+ *************************************************************/
 void setup (void)
 {
 	srand ((unsigned int) time (NULL));
@@ -482,6 +525,19 @@ void setup (void)
 	introScreen ();
 }
 
+/*************************************************************
+ * Function: printMenu ()                                    *
+ * Date Created: September 29, 2012                          *
+ * Date Last Modified: September 30, 2012                    *
+ * Description: This function clears the screen and prints   *
+ *              the title and awaits user to pick a menu     *
+ *              item. Input error check implemented.         *
+ * Input parameters: void                                    *
+ * Returns: menu item chosen in character type               *
+ * Preconditions: system () is part of the compiler's        *
+ *                library and user using Windows OS          *
+ * Postconditions: menu item chosen returned                 *
+ *************************************************************/
 char printMenu (void)
 {
 	char option = '\0';
@@ -499,6 +555,19 @@ char printMenu (void)
 	return option;
 }
 
+/*************************************************************
+ * Function: printGameRules ()                               *
+ * Date Created: September 29, 2012                          *
+ * Date Last Modified: September 30, 2012                    *
+ * Description: This function clears the screen then jprints *
+ *              the title of the game and prints the rules   *
+ *              on how to play the game.                     *
+ * Input parameters: void                                    *
+ * Returns: void                                             *
+ * Preconditions: system () is part of the compiler's        *
+ *                library and user using Windows OS          *
+ * Postconditions: User understand the rules of the game     *
+ *************************************************************/
 void printGameRules (void)
 {
 	system ("cls");
@@ -514,6 +583,18 @@ void printGameRules (void)
 	getch ();
 }
 
+/*************************************************************
+ * Function: printTitle ()                                   *
+ * Date Created: September 29, 2012                          *
+ * Date Last Modified: September 30, 2012                    *
+ * Description: This function clears the screen then prompts *
+ *              the title of CRAPS on screen.                *
+ * Input parameters: void                                    *
+ * Returns: void                                             *
+ * Preconditions: system () is part of the compiler's        *
+ *                library and user using Windows OS          *
+ * Postconditions: Prints the word CRAPS using * on screen   *
+ *************************************************************/
 void printTitle (void)
 {
 	system ("cls");
@@ -527,6 +608,19 @@ void printTitle (void)
 	printf ("\n");
 }
 
+/*************************************************************
+ * Function: introScreen ()                                  *
+ * Date Created: September 29, 2012                          *
+ * Date Last Modified: September 30, 2012                    *
+ * Description: This function clears the screen then prompts *
+ *              an animated title of CRAPS on screen.        *
+ * Input parameters: void                                    *
+ * Returns: void                                             *
+ * Preconditions: Windows.h must be included for Sleep ()    *
+ *                and Beep (). Also, it is defaulted to a    *
+ *                Windows OS                                 *
+ * Postconditions: Prints the word CRAPS using * on screen   *
+ *************************************************************/
 void introScreen (void)
 {
 	system ("cls"); /* for MAC change to system("clear"); */
