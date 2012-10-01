@@ -71,6 +71,8 @@ double getBankBalance (void);
 void chatterMessages (int numberRolls, int winLossNeither, 
 	                  double initialBankBalance, double currentBankBalance);
 
+int playAgain (double currentBalance);
+int getRandomNumber (int maxNumber);
 void animateDices (int dieOne, int dieTwo);
 void drawDie (int number);
 void diceOne (void);
@@ -79,12 +81,13 @@ void diceThree (void);
 void diceFour (void);
 void diceFive (void);
 void diceSix (void);
-int getRandomNumber (int maxNumber);
+void pressEnter (void);
 
 void setup (void);
 char printMenu (void);
 void printGameRules (void);		
 void printTitle (void);
 void introScreen (void);
+
 
 #endif

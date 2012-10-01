@@ -40,24 +40,19 @@
  *************************************************************/
 void play (void)
 {
-	int dieOne = 0, dieTwo = 0,
-		sumDice = 0, 
-		playerPoint = 0,
-		gameStatus = 0, 
-		numberOfRolls = 0,
-		playMore = 0;
+	int dieOne = 0, dieTwo = 0,		/* values for two dice */
+		sumDice = 0,                /* sum of two dice */
+		playerPoint = 0,            /* player's point */
+		gameStatus = 0,             /* status of game */
+		numberOfRolls = 0,          /* tracks number of rolls */
+		playMore = 0;               /* status indicator for more game */
 
-	double initialBankBalance = 0.0,
-		   balance = 0.0,
-		   wager = 0.0;
+	double initialBankBalance = 0.0,	/* value for initial bank balance */
+		   balance = 0.0,               /* value for current bank balance */
+		   wager = 0.0;                 /* value for wager or bet */
 
-	char escape = '\0';
 
-	/* The game should allow for wagering. 
-	   This means that you need to prompt that 
-	   user for an initial bank balance from which 
-	   wagers will be added or subtracted. Before 
-	   each roll prompt the user for a wager. */
+	/* Prompts user for inital bank balance */
 	initialBankBalance = getBankBalance ();
 	balance = initialBankBalance;
 	
@@ -65,13 +60,14 @@ void play (void)
 	{
 		do
 		{
+			/* Before each rool, prompt user for a wager */
 			wager = getWagerAmount ();
 		} while (!(checkWagerAmount (wager, balance)));
 
 
 		/* A player rolls two dice. */
-		printf ("<Press Enter to roll the dice>");
-		getch ();
+		printf ("<Press ENTER to roll the dice>");
+		pressEnter ();
 
 		/* Gets two random values from 1-6, and are 
 		   saved on the variables dieOne and dieTwo */
@@ -104,15 +100,22 @@ void play (void)
 
 				do
 				{
+					/* Prompts player to roll die until player gets the point or craps */
 					printf ("Continue rolling the dice until you get a sum of %d\n", playerPoint);
-					printf ("<Press Enter to roll the dice>");
-					escape = getchar ();
+					printf ("<Press ENTER to roll the dice>");
+					pressEnter ();
+
+					/* gets two random values for dieOne and dieTwo */
 					dieOne = rollDie ();
 					dieTwo = rollDie ();
+
+					/* animates two dice on the screen */
 					animateDices (dieOne, dieTwo);
 
+					/* gets the sum of the two dice */
 					sumDice = calculateSumDice (dieOne, dieTwo);
 
+					/* checks if user wins, craps or neither */
 					gameStatus = isPointLossOrNeither (sumDice, playerPoint);
 
 				} while (gameStatus == POINT);
@@ -134,12 +137,15 @@ void play (void)
 		/* Keeps track of the number of plays */
 		numberOfRolls++;
 
+		/* Prints out messages on screen */
 		chatterMessages (numberOfRolls, gameStatus, initialBankBalance, balance);
-		printf ("<Press Enter to continue>");
-		getch ();
+		printf ("<Press ENTER to continue>");
+		pressEnter ();
 
 		if (balance > 0)
 		{
+			/* If balance is greater than 0,
+			   Prompts player to play more or not */
 			playMore = playAgain (balance);
 		}
 		else
@@ -208,7 +214,7 @@ double adjustBankBalance (double balance, double wager, int addOrSubtract)
  *************************************************************/
 int isPointLossOrNeither (int sumDice, int playerPoint)
 {
-	int status = POINT;
+	int status = POINT;		/* status indicator */
 
 	if (sumDice == 7)
 	{
@@ -222,18 +228,28 @@ int isPointLossOrNeither (int sumDice, int playerPoint)
 	return status;
 }
 
-/* 
-Determines the result of the first dice roll. 
-If the sum is 7 or 11 on the roll, the player 
-wins and 1 is returned. If the sum is 2, 3, or 12 
-on the first throw (called "craps"), the player loses 
-(i.e. the "house" wins) and 0 is returned. 
-If the sum is 4, 5, 6, 8, 9, or 10 on the first throw,
-then the sum becomes the player's "point" and -1 is returned. 
- */
+/*************************************************************
+ * Function: isWinLossOrPoint ()                             *
+ * Date Created: September 29, 2012                          *
+ * Date Last Modified: September 30, 2012                    *
+ * Description: This function determines the result of the   *
+ *              first dice roll. If the sum is 7 or 11 on    *
+ *              the roll, the player wins and 1 is returned. *
+ *              If the sum is 2, 3, or 12 on the first throw *
+ *              (called "craps"), the player loses (i.e. the *
+ *              "house" wins) and 0 is returned. If the sum  *
+ *              is 4, 5, 6, 8, 9, or 10 on the first throw,  *
+ *              then the sum becomes the player's "point"    *
+ *              and -1 is returned.                          *
+ * Input parameters: sum of the two die                      *
+ * Returns: indicator if player loss, wins or neither        *
+ * Preconditions: sum of the two die rolled are computed     *
+ *                with correct values                        *
+ * Postconditions: indicator if it's a point, loss or win    *
+ *************************************************************/
 int isWinLossOrPoint (int sumDice)
 {
-	int status = CRAPS;
+	int status = CRAPS;		/* status indicator */
 
 	if (sumDice == 7 || sumDice == 11)
 	{
@@ -249,23 +265,56 @@ int isWinLossOrPoint (int sumDice)
 	return status;
 }
 
+/*************************************************************
+ * Function: calculateSumDice ()                             *
+ * Date Created: September 29, 2012                          *
+ * Date Last Modified: September 30, 2012                    *
+ * Description: This function calculates sum of the values   *
+ *              of two dice                                  *
+ * Input parameters: die one and die two                     *
+ * Returns: sum of two dice                                  *
+ * Preconditions: None                                       *
+ * Postconditions: Sum of two dice returned                  *
+ *************************************************************/
 int calculateSumDice (int dieOne, int dieTwo)
 {
 	return (dieOne + dieTwo);
 }
 
+/*************************************************************
+ * Function: rollDie ()                                      *
+ * Date Created: September 29, 2012                          *
+ * Date Last Modified: September 30, 2012                    *
+ * Description: This function gets a random value for a die  *
+ *              between 1 to 6                               *
+ * Input parameters: void                                    *
+ * Returns: random value of a die                            *
+ * Preconditions: getRandomNumber () is defined              *
+ * Postconditions: Value of a die returned                   *
+ *************************************************************/
 int rollDie (void)
 {
-	int dieValue = 0;
+	int dieValue = 0;		/* value for a die */
 
 	dieValue = getRandomNumber (6);
 
 	return dieValue;
 }
 
+/*************************************************************
+ * Function: checkWagerAmount ()                             *
+ * Date Created: September 29, 2012                          *
+ * Date Last Modified: September 30, 2012                    *
+ * Description: This function checks if the wager amount is  *
+ *              within the current balance of the player     *
+ * Input parameters: wager, current balance                  *
+ * Returns: indicator if wager is acceptable                 *
+ * Preconditions: None                                       *
+ * Postconditions: Indicator of valid wager returned         *
+ *************************************************************/
 int checkWagerAmount (double wager, double balance)
 {
-	int check = 0;
+	int check = 0;			/* status indicator */
 
 	if (wager <= balance) 
 	{
@@ -288,9 +337,20 @@ int checkWagerAmount (double wager, double balance)
 	return check;
 }
 
+/*************************************************************
+ * Function: getWagerAmount ()                               *
+ * Date Created: September 29, 2012                          *
+ * Date Last Modified: September 30, 2012                    *
+ * Description: This function prompts player to enter a      *
+ *              wager.                                       *
+ * Input parameters: void                                    *
+ * Returns: value for wager                                  *
+ * Preconditions: None                                       *
+ * Postconditions: Wager is returned                         *
+ *************************************************************/
 double getWagerAmount (void)
 {
-	double wager = 0.0;
+	double wager = 0.0;		/* wager value */
 
 	while (TRUE)
 	{
@@ -307,9 +367,20 @@ double getWagerAmount (void)
 	return wager;
 }
 
+/*************************************************************
+ * Function: getBankBalance ()                               *
+ * Date Created: September 29, 2012                          *
+ * Date Last Modified: September 30, 2012                    *
+ * Description: This function prompts player to enter a      *
+ *              amount in the bank                           *
+ * Input parameters: void                                    *
+ * Returns: value indicating amount of money in the bank     *
+ * Preconditions: None                                       *
+ * Postconditions: Bank balance returned                     *
+ *************************************************************/
 double getBankBalance (void)
 {
-	double initBankBalance = 0.0;
+	double initBankBalance = 0.0;	/* initial bank balance */
 
 	printTitle ();
 
@@ -328,13 +399,25 @@ double getBankBalance (void)
 	return initBankBalance;
 }
 
-/*
-Prints an appropriate message dependent on the number of 
-rolls taken so far by the player, the current balance, 
-and whether or not the player just won his roll. The 
-parameter win_loss_neither indicates the result of the 
-previous roll.
-*/
+/*************************************************************
+ * Function: chatterMessages ()                              *
+ * Date Created: September 30, 2012                          *
+ * Date Last Modified: September 30, 2012                    *
+ * Description: This function prints an appropriate message  *
+ *              dependent on the number of rolls taken so    *
+ *              far by the player, the current balance, and  *
+ *              whether or not the player just won his roll. *
+ *              The parameter winLossNeither indicates the   *
+ *              result of the previous roll.                 *
+ * Input parameters: number of rolls, indicator of the       *
+ *                   result of previous roll, initial and    *
+ *                   current bank balance                    *
+ * Returns: void                                             *
+ * Preconditions: None                                       *
+ * Postconditions: Chatter message will or will not be       *
+ *                 printed out on screen. Depends if         *
+ *                 conditions are met.                       *
+ *************************************************************/
 void chatterMessages (int numberRolls, int winLossNeither, 
 	                  double initialBankBalance, double currentBankBalance)
 {
@@ -348,19 +431,24 @@ void chatterMessages (int numberRolls, int winLossNeither,
 		printf ("OBAMA: Your such a Loser! Your bad luck, stay away from me...\n");
 	}
 
-	if (winLossNeither == 0 && currentBankBalance == 0)
+	if (winLossNeither == 0 && 
+		currentBankBalance == 0)
 	{
 		printf ("Sorry, you busted!\n");
 	}
-	else if (winLossNeither == 0 && currentBankBalance < (initialBankBalance * .5))
+	else if (winLossNeither == 0 && 
+		     currentBankBalance < (initialBankBalance * .5))
 	{
 		printf ("Oh, you're going for broke, huh?\n");
 	}
-	else if (winLossNeither == 1 && currentBankBalance > (initialBankBalance * .5) && currentBankBalance < initialBankBalance)
+	else if (winLossNeither == 1 && 
+		     currentBankBalance > (initialBankBalance * .5) && 
+			 currentBankBalance < initialBankBalance)
 	{
 		printf ("Aw c'mon, take a chance!\n");
 	}
-	else if (winLossNeither == 0 && currentBankBalance > initialBankBalance)
+	else if (winLossNeither == 0 && 
+		     currentBankBalance > initialBankBalance)
 	{
 		printf ("You're up big, now's the time to cash in your chips!\n");
 	}
@@ -368,47 +456,146 @@ void chatterMessages (int numberRolls, int winLossNeither,
 
 /* UTILITY FUNCTIONS */
 
+/*************************************************************
+ * Function: playAgain ()                                    *
+ * Date Created: September 29, 2012                          *
+ * Date Last Modified: September 30, 2012                    *
+ * Description: This function prints out the current balance *
+ *              and prompts player to play more or not.      *
+ * Input parameters: player's current balance on hand        *
+ * Returns: status indicator, 1 for play more & 0 otherwise  *
+ * Preconditions: current balance is not equal to zero,      *
+ *                function should not be called if player    *
+ *                does not have any money on hand            *
+ * Postconditions: Status indicator returned                 *
+ *************************************************************/
 int playAgain (double currentBalance)
 {
-	char ch = '\0';
-	int playMore = 0;
+	char ch = '\0';        /* input for Y/N option */
+	int playMore = -1;	   /* status indicator to play again */
 
-	system ("cls");
-	printTitle ();
-	printf ("Current Balance: $%.2lf\n", currentBalance);
-	printf ("Do you want to play more (Y/N)? ");
-	scanf ("\n\n\n%c", &ch);
+	do {
+		/* clears the screen */
+		system ("cls");
 
-	if (ch == 'y' || ch == 'Y')
-		playMore = 1;
+		/* prints title on top of the screen */
+		printTitle ();
+
+		/* prints current balance */
+		printf ("Current Balance: $%.2lf\n", currentBalance);
+
+		/* prompts user if he wants to play more or not */
+		printf ("Do you want to play more (Y/N)? ");
+		fflush (stdin);  /* flushes previous escape characters */
+		scanf ("%c", &ch);
+
+		if (ch == 'y' || ch == 'Y')
+		{
+			/* indicates player chooses to play more */
+			playMore = TRUE;
+		}
+		else if (ch == 'n' || ch == 'N')
+		{
+			/* indicates player doesn't want to play any more */
+			playMore = FALSE;
+		}
+		else
+		{
+			/* warns user of invalid input */
+			printf ("Invalid Input! Press ENTER to continue.\n");
+			pressEnter ();
+		}
+
+	} while (playMore == -1);
 
 	return playMore;
 }
 
+/*************************************************************
+ * Function: getRandomNumber ()                              *
+ * Date Created: September 29, 2012                          *
+ * Date Last Modified: September 29, 2012                    *
+ * Description: This function generates a random number from *
+ *              1 to a number specified by the input param-  *
+ *              eter, maxNumber.                             *
+ * Input parameters: Upper bound of the range of numbers to  *
+ *                   from randomly                           *
+ * Returns: Randomly selected number between 1 to maxNumber  *
+ * Preconditions: srand () is initiated before this function *
+ *                is called to get better random numbers     *
+ * Postconditions: A random number was returned              *
+ *************************************************************/
+int getRandomNumber (int maxNumber)
+{
+	int number = 0;    /* output random number */
+
+	number = (rand () % maxNumber) + 1;
+
+	return number;
+}
+
+/*************************************************************
+ * Function: animateDices ()                                 *
+ * Date Created: September 29, 2012                          *
+ * Date Last Modified: September 29, 2012                    *
+ * Description: This function simulates the two dices being  *
+ *              rolled and prints out random dices on screen *
+ * Input parameters: values for die one and die two          *
+ * Returns: void                                             *
+ * Preconditions: Random function is working properly and    *
+ *                values for die one and two to be received  *
+ *                were randomly selected. Windows.h must be  *
+ *                included for Sleep () and Beep ()          *
+ * Postconditions: Outputs selected two dices on the screen  *
+ *************************************************************/
 void animateDices (int dieOne, int dieTwo)
 {
-	int i = 0;
+	int i = 0;	   /* counter */
 
 	for (i = 0; i < DICE_NUMBER_OF_ROTATION; i++)
 	{
+		/* Clears the screen */
 		system ("cls");
+
+		/* Prints the title on top of the screen */
 		printTitle ();
+
+		/* Outputs 2 simulated dice on the screen 
+		   based from the generated random number */
 		drawDie (getRandomNumber (6));
 		printf ("\n");
 		drawDie (getRandomNumber (6));
+
+		/* Makes a beep sound */
 		Beep (523, 300);
+
+		/* Pauses the program */
 		Sleep (300);
 	}
 
 	system ("cls");
 	printTitle ();
+
 	drawDie (dieOne);
 	printf ("\n");
 	drawDie (dieTwo);
 	printf ("\n");
+
 	Beep (659, 200);
 }
 
+/*************************************************************
+ * Function: drawDie ()                                      *
+ * Date Created: September 29, 2012                          *
+ * Date Last Modified: September 29, 2012                    *
+ * Description: This function accepts a number as argument   *
+ *              and number determines which die to output on *
+ *              the screen.                                  *
+ * Input parameters: number from 1 to 6 (faces of a die)     *
+ * Returns: void                                             *
+ * Preconditions: None                                       *
+ * Postconditions: Outputs selected die on screen            *
+ *************************************************************/
 void drawDie (int number)
 {
 	switch (number)
@@ -439,6 +626,17 @@ void drawDie (int number)
 	}
 }
 
+/*************************************************************
+ * Function: diceOne ()                                      *
+ * Date Created: September 29, 2012                          *
+ * Date Last Modified: September 29, 2012                    *
+ * Description: This function prints out a simulated picture *
+ *              of a die with an upward face of 1 using '*'  *
+ * Input parameters: void                                    *
+ * Returns: void                                             *
+ * Preconditions: None                                       *
+ * Postconditions: Outputs on screen die 1                   *
+ *************************************************************/
 void diceOne (void)
 {
 	printf ("              ***********\n");
@@ -448,6 +646,17 @@ void diceOne (void)
 	printf ("              ***********\n");
 }
 
+/*************************************************************
+ * Function: diceTwo ()                                      *
+ * Date Created: September 29, 2012                          *
+ * Date Last Modified: September 29, 2012                    *
+ * Description: This function prints out a simulated picture *
+ *              of a die with an upward face of 2 using '*'  *
+ * Input parameters: void                                    *
+ * Returns: void                                             *
+ * Preconditions: None                                       *
+ * Postconditions: Outputs on screen die 2                   *
+ *************************************************************/
 void diceTwo (void)
 {
 	printf ("              ***********\n");
@@ -457,6 +666,17 @@ void diceTwo (void)
 	printf ("              ***********\n");
 }
 
+/*************************************************************
+ * Function: diceThree ()                                    *
+ * Date Created: September 29, 2012                          *
+ * Date Last Modified: September 29, 2012                    *
+ * Description: This function prints out a simulated picture *
+ *              of a die with an upward face of 3 using '*'  *
+ * Input parameters: void                                    *
+ * Returns: void                                             *
+ * Preconditions: None                                       *
+ * Postconditions: Outputs on screen die 3                   *
+ *************************************************************/
 void diceThree (void)
 {
 	printf ("              ***********\n");
@@ -466,6 +686,17 @@ void diceThree (void)
 	printf ("              ***********\n");
 }
 
+/*************************************************************
+ * Function: diceFour ()                                     *
+ * Date Created: September 29, 2012                          *
+ * Date Last Modified: September 29, 2012                    *
+ * Description: This function prints out a simulated picture *
+ *              of a die with an upward face of 4 using '*'  *
+ * Input parameters: void                                    *
+ * Returns: void                                             *
+ * Preconditions: None                                       *
+ * Postconditions: Outputs on screen die 4                   *
+ *************************************************************/
 void diceFour (void)
 {
 	printf ("              ***********\n");
@@ -475,6 +706,17 @@ void diceFour (void)
 	printf ("              ***********\n");
 }
 
+/*************************************************************
+ * Function: diceFive ()                                     *
+ * Date Created: September 29, 2012                          *
+ * Date Last Modified: September 29, 2012                    *
+ * Description: This function prints out a simulated picture *
+ *              of a die with an upward face of 5 using '*'  *
+ * Input parameters: void                                    *
+ * Returns: void                                             *
+ * Preconditions: None                                       *
+ * Postconditions: Outputs on screen die 5                   *
+ *************************************************************/
 void diceFive (void)
 { 
 	printf ("              ***********\n");
@@ -484,6 +726,17 @@ void diceFive (void)
 	printf ("              ***********\n");
 }
 
+/*************************************************************
+ * Function: diceSix ()                                      *
+ * Date Created: September 29, 2012                          *
+ * Date Last Modified: September 29, 2012                    *
+ * Description: This function prints out a simulated picture *
+ *              of a die with an upward face of 6 using '*'  *
+ * Input parameters: void                                    *
+ * Returns: void                                             *
+ * Preconditions: None                                       *
+ * Postconditions: Outputs on screen die 6                   *
+ *************************************************************/
 void diceSix (void)
 {
 	printf ("              ***********\n");
@@ -493,13 +746,28 @@ void diceSix (void)
 	printf ("              ***********\n");
 }
 
-int getRandomNumber (int maxNumber)
+/*************************************************************
+ * Function: pressEnter ()                                   *
+ * Date Created: October 1, 2012                             *
+ * Date Last Modified: October 1, 2012                       *
+ * Description: This function requires the user press the    *
+ *              Enter key only. If input is invalid, it will *
+ *              wait and ask user to press the Enter key.    *
+ * Input parameters: void                                    *
+ * Returns: void                                             *
+ * Preconditions: None                                       *
+ * Postconditions: User pressed the Enter key. Program       *
+ *                 continues to execute where it left off    *
+ *************************************************************/
+void pressEnter (void)
 {
-	int number = 0;
+	char ch = '\0';
 
-	number = (rand () % maxNumber) + 1;
-
-	return number;
+	do
+	{
+		fflush (stdin);
+		scanf ("%c", &ch);
+	} while (ch != '\n');
 }
 
 /* SETUP FUNCTIONS */
@@ -519,6 +787,7 @@ int getRandomNumber (int maxNumber)
  *************************************************************/
 void setup (void)
 {
+	/* initiates srand () function necessary for rand () */
 	srand ((unsigned int) time (NULL));
 
 	/* Animated welcome screen is displayed on the screen  */
@@ -533,14 +802,15 @@ void setup (void)
  *              the title and awaits user to pick a menu     *
  *              item. Input error check implemented.         *
  * Input parameters: void                                    *
- * Returns: menu item chosen in character type               *
+ * Returns: menu item chosen, 1 to start new game, 2 to      *
+ *          show rules of the game & 3 to exit game          *
  * Preconditions: system () is part of the compiler's        *
  *                library and user using Windows OS          *
  * Postconditions: menu item chosen returned                 *
  *************************************************************/
 char printMenu (void)
 {
-	char option = '\0';
+	char option = '\0';    /* menu option */
 
 	do {
 		system ("cls");
@@ -579,8 +849,8 @@ void printGameRules (void)
 	printf ("> If the sum is 2, 3 or 12 on the first\n  throw, CRAPS... The PLAYER LOSES!\n");
 	printf ("> If the sum is 4, 5, 6, 8, 9, or 10 on\n  the first throw, then the sum becomes\n  the PLAYER'S POINT.\n");
 	printf ("> To win, you must continue rolling the\n  dice until you make your POINT. The\n  player loses by rolling a 7 before\n  making the point.\n");
-	printf ("       <Press Enter to continue>");
-	getch ();
+	printf ("       <Press ENTER to continue>");
+	pressEnter ();
 }
 
 /*************************************************************
@@ -623,6 +893,7 @@ void printTitle (void)
  *************************************************************/
 void introScreen (void)
 {
+	/* Clears the screen */
 	system ("cls"); /* for MAC change to system("clear"); */
     printf ("******************************************\n");
 	printf ("*                                        *\n");
@@ -631,7 +902,9 @@ void introScreen (void)
 	printf ("*                                        *\n");
 	printf ("*                                        *\n");
 	printf ("******************************************\n");
+	/* Pauses the program for x-value in millilseconds */
 	Sleep (1000);
+
 	system ("cls");
 	printf ("******************************************\n");
 	printf ("* ******                                 *\n");
@@ -640,8 +913,10 @@ void introScreen (void)
 	printf ("* *                                      *\n");
 	printf ("* ******                                 *\n");
 	printf ("******************************************\n");
+	/* Gives off a beeping sound */
 	Beep (523, 200);
 	Sleep (200);
+
 	system ("cls");
 	printf ("******************************************\n");
 	printf ("* ******  *****                          *\n");
@@ -652,6 +927,7 @@ void introScreen (void)
 	printf ("******************************************\n");
 	Beep (587, 200);
 	Sleep (200);
+
 	system ("cls");
 	printf ("******************************************\n");
 	printf ("* ******  *****    ****                  *\n");
@@ -662,6 +938,7 @@ void introScreen (void)
 	printf ("******************************************\n");
 	Beep (659, 200);
 	Sleep (200);
+
 	system ("cls");
 	printf ("******************************************\n");
 	printf ("* ******  *****    ****   *****          *\n");
@@ -672,6 +949,7 @@ void introScreen (void)
 	printf ("******************************************\n");
 	Beep (698, 200);
 	Sleep (200);
+
 	system ("cls");
 	printf ("******************************************\n");
 	printf ("* ******  *****    ****   *****    ***** *\n");
@@ -682,6 +960,7 @@ void introScreen (void)
 	printf ("******************************************\n");
 	Beep (784, 200);
 	Sleep (200);
+
 	system ("cls");
     printf ("******************************************\n");
 	printf ("*                                        *\n");
@@ -692,6 +971,7 @@ void introScreen (void)
 	printf ("******************************************\n");
 	Beep (698, 200);
 	Sleep (150);
+
 	system ("cls");
 	printf ("******************************************\n");
 	printf ("* ******  *****    ****   *****    ***** *\n");
@@ -702,6 +982,7 @@ void introScreen (void)
 	printf ("******************************************\n");
 	Beep (784, 200);
 	Sleep (200);
+
 	system ("cls");
 	printf ("******************************************\n");
 	printf ("* ******  *****    ****   *****    ***** *\n");
