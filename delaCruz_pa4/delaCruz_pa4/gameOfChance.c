@@ -13,6 +13,8 @@ void play (void)
 		   balance = 0.0,
 		   wager = 0.0;
 
+	char escape = '\0';
+
 	/* The game should allow for wagering. */
 	/* This means that you need to prompt that user for an initial bank balance 
 	   from which wagers will be added or subtracted. Before each roll prompt the 
@@ -29,8 +31,8 @@ void play (void)
 
 
 		/* A player rolls two dice. */
-		printf ("Press any key to roll the dice\n");
-		getch();
+		printf ("<Press Enter to roll the dice>");
+		getchar ();
 		dieOne = rollDie ();
 		dieTwo = rollDie ();
 		animateDices (dieOne, dieTwo);
@@ -55,8 +57,8 @@ void play (void)
 				do
 				{
 					printf ("Continue rolling the dice until you get a sum of %d\n", playerPoint);
-					printf ("<Press any key to roll the dice>\n");
-					getch ();
+					printf ("<Press Enter to roll the dice>");
+					escape = getchar ();
 					dieOne = rollDie ();
 					dieTwo = rollDie ();
 					animateDices (dieOne, dieTwo);
@@ -82,8 +84,8 @@ void play (void)
 		numberOfRolls++;
 
 		chatterMessages (numberOfRolls, gameStatus, initialBankBalance, balance);
-		printf ("<Press any key to continue>");
-		getch();
+		printf ("<Press Enter to continue>");
+		getchar ();
 
 		if (balance > 0)
 		{
@@ -468,8 +470,8 @@ void printGameRules (void)
 	printf ("> If the sum is 2, 3 or 12 on the first\n  throw, CRAPS... The PLAYER LOSES!\n");
 	printf ("> If the sum is 4, 5, 6, 8, 9, or 10 on\n  the first throw, then the sum becomes\n  the PLAYER'S POINT.\n");
 	printf ("> To win, you must continue rolling the\n  dice until you make your POINT. The\n  player loses by rolling a 7 before\n  making the point.\n");
-	printf ("       <Press any key to continue>");
-	getch ();
+	printf ("       <Press Enter to continue>");
+	getchar ();
 }
 
 void printTitle (void)
@@ -575,7 +577,5 @@ void introScreen (void)
 	printf ("* ******  *    *  *    *  *       *****  *\n");
 	printf ("******************************************\n");
 	printf ("\n");
-	//printf ("***  PRESS ANY KEY TO START THE GAME   ***\n");
 	Beep (698, 200);
-	//getch ();		
 }

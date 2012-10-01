@@ -4,9 +4,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include <Windows.h> /* System () */
+#include <Windows.h>	/* Sleep () */
 #include <conio.h>
-#include <math.h>	/* floor () */
 
 #define TRUE	1
 #define FALSE	0
