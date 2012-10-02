@@ -31,32 +31,32 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include <Windows.h>	/* Sleep () */
-#include <conio.h>		/* getch () */
+#include <Windows.h>    /* Sleep () */
+#include <conio.h>      /* getch () */
 
-#define TRUE	1		/* Boolean constant for True */
+#define TRUE	1       /* Boolean constant for True */
 #define FALSE	0       /* Boolean constant for False */
 
-#define START_NEW_GAME  '1'		/* Menu option 1 */
-#define HOW_TO_PLAY		'2'		/* Menu option 2 */
-#define EXIT_GAME       '3'     /* Menu option 3 */
+#define START_NEW_GAME  '1'    /* Menu option 1 */
+#define HOW_TO_PLAY		'2'    /* Menu option 2 */
+#define EXIT_GAME       '3'    /* Menu option 3 */
 
 #define ONE		1
 #define TWO		2
 #define THREE	3
 #define FOUR	4
 #define	FIVE	5
-#define SIX		6		/* 6 faces of a die */
+#define SIX		6       /* 6 faces of a die */
 
-#define CRAPS	0		/* Indicator of losing a play or craps */
+#define CRAPS	0       /* Indicator of losing a play or craps */
 #define WINS	1       /* Indicator of winning a play */
 #define POINT	-1      /* Indicator of getting a point on first throw */
 
-#define WINNING_WAGER_MULTIPLIER	2		/* Bet or wager is multiplied by this number if player wins */
+#define WINNING_WAGER_MULTIPLIER	2       /* Bet or wager is multiplied by this number if player wins */
 #define DICE_NUMBER_OF_ROTATION		5       /* Number of times dice is rolled during animation */
 
-#define ERROR_1	"Wager exceeds balance of "						/* Error message 1 */
-#define ERROR_2 "Amount cannot be less than or equal to 0"		/* Error message 2 */
+#define ERROR_1	"Wager exceeds balance of "                     /* Error message 1 */
+#define ERROR_2 "Amount cannot be less than or equal to 0"      /* Error message 2 */
 
                         
 void play (void);

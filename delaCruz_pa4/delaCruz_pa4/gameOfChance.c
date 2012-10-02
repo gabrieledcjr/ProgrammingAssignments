@@ -40,7 +40,7 @@
  *************************************************************/
 void play (void)
 {
-	int dieOne = 0, dieTwo = 0,		/* values for two dice */
+	int dieOne = 0, dieTwo = 0,     /* values for two dice */
 		sumDice = 0,                /* sum of two dice */
 		playerPoint = 0,            /* player's point */
 		gameStatus = 0,             /* status of game */
