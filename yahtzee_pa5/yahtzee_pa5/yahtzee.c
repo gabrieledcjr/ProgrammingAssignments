@@ -2,51 +2,496 @@
 
 void startNewGame (void)
 {
-	int die1 = 0, die2 = 0, die3 = 0, die4 = 0, die5 = 0;
-	int holdDie1 = FALSE, holdDie2 = FALSE, holdDie3 = FALSE, holdDie4 = FALSE, holdDie5 = FALSE;
+	int dice[5] = {0, 0, 0, 0, 0};
+	int holdDice[5] = {0, 0, 0, 0, 0};
+	int i = 0;
 
 	int numberOfRolls = 0;
 	int playerNumber = 1;		/* which player is playing */
+	int category = 0;
+	int score = 0;
+	int categorySelected [2][13];
+	int scoreBoard [2][14];
+
+	int numberOfPlay = 0;
+
+	char isRollAgain = '\0';
 
 	system ("cls");	
-
 	setupGameBoard ();
 
 	do
 	{
+		for (i = 0; i < NUMBER_OF_DICE; i++)
+		{
+			/* resets values for dice to zero */
+			dice[i] = 0;				
+
+			/* resets values for hold dice to none */
+			holdDice[i] = 0;            
+		}
+
+		/* reset number of rolls to zero */
+		numberOfRolls = 0;		
+
+		/* alternate players */
+		playerNumber = !playerNumber;	
+
+		/* resets the dice are to blank */
+		updateDiceArea (dice, holdDice, numberOfRolls);
+            
+
 		gotoxy (21, 21);
-		printf ("PLAYER %d: Press <ENTER> to roll the dice                 ", playerNumber);
+		printf ("PLAYER %d: Press <ENTER> to roll the dice                 ", playerNumber + 1);
 		gotoxy (21, 22);
 		printf ("                                                         ");
 		pressEnter ();
 
 		do
 		{
-			rollDice (&die1, &die2, &die3, &die4, &die5, 
-					  holdDie1, holdDie2, holdDie3, holdDie4, holdDie5);
+			rollDice (dice, holdDice);
 			numberOfRolls++;
-			updateDiceArea (die1, die2, die3, die4, die5, 
-							holdDie1, holdDie2, holdDie3, holdDie4, holdDie5, numberOfRolls);
+			updateDiceArea (dice, holdDice, numberOfRolls);
+			if (numberOfRolls == 3) break;
+
 			gotoxy (21, 21);
-			printf ("PLAYER %d: Type 'H' to hold a die and 'U' to unhold a die.", playerNumber);
+			printf ("PLAYER %d: Press <SPACEBAR> to hold or unhold a die     ", playerNumber + 1);
 			gotoxy (21, 22);
 			printf ("          Press <ENTER> to roll the dice                 ");
 
-			chooseDiceToHold (&holdDie1, &holdDie2, &holdDie3, &holdDie4, &holdDie5);
+			chooseDiceToHold (holdDice);
 
-		} while (numberOfRolls != 3);
+			gotoxy (21, 21);
+			printf ("                                                         ");
+			gotoxy (21, 22);
+			printf ("                                                         ");
+
+			do {
+				gotoxy (21, 21);
+				printf ("PLAYER %d: Roll Again? [Y/N]: ", playerNumber + 1);
+				isRollAgain = getche ();
+
+				if (tolower (isRollAgain) != 'y' && tolower (isRollAgain) != 'n')
+				{
+					gotoxy (21, 22);
+					printf ("          Invalid input!                                 ");
+				}
+				else break;
+
+			} while (1);
+
+			if (tolower (isRollAgain) == 'n') break;
+
+		} while (1);
+
+		do {
+			gotoxy (21, 21);
+			printf ("PLAYER %d: Choose a category and press <ENTER>            ", playerNumber + 1);
+			gotoxy (21, 22);
+			printf ("                                                         ");
+		
+			chooseCategory (&category);
+			if (categorySelected [playerNumber][category - 1] == 1)
+			{
+				gotoxy (21, 21);
+				printf ("PLAYER %d: ERROR! Category already selected               ", playerNumber + 1);
+				gotoxy (21, 22);
+				printf ("          Press <ENTER> to select a new category         ");
+				pressEnter ();
+			}
+			else break;
+
+		} while (1);
 
 		gotoxy (21, 21);
-		printf ("PLAYER %d: Choose a category and press <ENTER>            ", playerNumber);
-		gotoxy (21, 22);
-		printf ("                                                         ");
+		printf ("PLAYER %d: Chosen category %d and press <ENTER>           ", playerNumber + 1, category);		
+		
+		computeCategoryScore (dice, category, &score);
+
+		scoreBoard [playerNumber][category - 1] = score;
+		categorySelected [playerNumber][category - 1] = 1;  /* category is selected */
+		updateScoreBoard (playerNumber, category, score);
+
+		numberOfPlay++;
+
 		pressEnter ();
 
-		break;
-	} while (1);
+	} while (numberOfPlay < 26);
+
+	gotoxy (40, 17);
+	printf ("UPPER TOTAL:");
+    gotoxy (40, 18);
+	printf ("      BONUS:");
+
+	for (playerNumber = 0; playerNumber < 2; playerNumber++)
+	{
+		scoreBoard [playerNumber][13] = 0;
+
+		for (i = 0; i < NUMBER_OF_CATEGORIES; i++)
+		{
+			scoreBoard [playerNumber][13] += scoreBoard [playerNumber][i];
+			if (i == SIXES - 1)
+			{
+				gotoxy (54 + (playerNumber * 11), 17);
+				printf ("%4d", scoreBoard [playerNumber][13]);
+
+				if (scoreBoard [playerNumber][13] >= BONUS_RANGE)
+				{
+					scoreBoard [playerNumber][13] += BONUS_POINTS;
+					gotoxy (54 + (playerNumber * 11), 18);
+					printf ("+%3d", BONUS_POINTS);					
+				}
+			}
+		}
+	}
+
+	gotoxy (54, 19);
+	printf ("%4d", scoreBoard [0][13]);
+	gotoxy (54 + 11, 19);
+	printf ("%4d", scoreBoard [1][13]);
+
+	gotoxy (21, 21);
+	printf ("                                                         ");
+	gotoxy (21, 22);
+	printf ("                                                         ");
+	gotoxy (21, 21);
+	printf ("THANKS FOR PLAYING YAHTZEE!");
+	gotoxy (21, 22);
+	printf ("Press <ENTER> to return to MAIN MENU");
+	pressEnter ();
 }
 
-void chooseDiceToHold (int *holdDie1, int *holdDie2, int *holdDie3, int *holdDie4, int *holdDie5)
+void updateScoreBoard (int playerNumber, int category, int score)
+{
+	int cursorX = 54, cursorY = 3;
+
+	switch (category)
+	{
+		case ONES:
+			gotoxy (cursorX + (playerNumber * 11), cursorY + ONES);
+			printf ("%4d", score);
+			break;
+
+		case TWOS:
+			gotoxy (cursorX + (playerNumber * 11), cursorY + TWOS);
+			printf ("%4d", score);
+			break;
+
+		case THREES:
+			gotoxy (cursorX + (playerNumber * 11), cursorY + THREES);
+			printf ("%4d", score);
+			break;
+
+		case FOURS:
+			gotoxy (cursorX + (playerNumber * 11), cursorY + FOURS);
+			printf ("%4d", score);
+			break;
+		case FIVES:
+			gotoxy (cursorX + (playerNumber * 11), cursorY + FIVES);
+			printf ("%4d", score);
+			break;
+
+		case SIXES:
+			gotoxy (cursorX + (playerNumber * 11), cursorY + SIXES);
+			printf ("%4d", score);
+			break;
+
+		case THREE_OF_A_KIND:
+			gotoxy (cursorX + (playerNumber * 11), cursorY + THREE_OF_A_KIND);
+			printf ("%4d", score);
+			break;
+
+		case FOUR_OF_A_KIND:
+			gotoxy (cursorX + (playerNumber * 11), cursorY + FOUR_OF_A_KIND);
+			printf ("%4d", score);
+			break;		
+
+		case FULL_HOUSE:
+			gotoxy (cursorX + (playerNumber * 11), cursorY + FULL_HOUSE);
+			printf ("%4d", score);
+			break;
+
+		case SMALL_STRAIGHT:
+			gotoxy (cursorX + (playerNumber * 11), cursorY + SMALL_STRAIGHT);
+			printf ("%4d", score);
+			break;
+
+		case LARGE_STRAIGHT:
+			gotoxy (cursorX + (playerNumber * 11), cursorY + LARGE_STRAIGHT);
+			printf ("%4d", score);
+			break;
+
+		case YAHTZEE:
+			gotoxy (cursorX + (playerNumber * 11), cursorY + YAHTZEE);
+			printf ("%4d", score);
+			break;
+
+		case CHANCE:
+			gotoxy (cursorX + (playerNumber * 11), cursorY + CHANCE);
+			printf ("%4d", score);
+			break;
+	}
+}
+
+void computeCategoryScore (int dice [], int category, int *score)
+{
+	int i = 0;
+	*score = 0;
+
+	switch (category)
+	{
+		case ONES:
+		case TWOS:
+		case THREES:
+		case FOURS:
+		case FIVES:
+		case SIXES:
+			for (i = 0; i < NUMBER_OF_DICE; i++)
+			{
+				if (dice [i] == category)
+				{
+					*score += category;
+				}
+			}
+			break;
+
+		case THREE_OF_A_KIND:
+		case FOUR_OF_A_KIND:
+		case CHANCE:
+			/* The sum of all five dice */
+			if (checkCategory (dice, category) || category == CHANCE)
+			{
+				for (i = 0; i < NUMBER_OF_DICE; i++)
+				{
+					*score += dice [i];
+				}
+			}
+			break;
+
+		case FULL_HOUSE:
+			if (checkCategory (dice, category)) *score = 25;
+			break;
+
+		case SMALL_STRAIGHT:
+			if (checkCategory (dice, category)) *score = 30;
+			break;
+
+		case LARGE_STRAIGHT:
+			if (checkCategory (dice, category)) *score = 40;
+			break;
+
+		case YAHTZEE:
+			if (checkCategory (dice, category)) *score = 50;
+			break;
+	}
+}
+
+int checkCategory (int dice [], int category)
+{
+	int isACategory = FALSE;
+	int checker [6] = {0, 0, 0, 0, 0, 0};
+	int i = 0, j = 0;
+
+	for (i = 0; i < NUMBER_OF_DICE; i++)
+	{
+		switch (dice [i])
+		{
+			case 1: checker [0]++; break;
+			case 2: checker [1]++; break;
+			case 3: checker [2]++; break;
+			case 4: checker [3]++; break;
+			case 5: checker [4]++; break;
+			case 6: checker [5]++; break;
+		}
+	}
+
+	if (category == THREE_OF_A_KIND) 
+	{
+		for (i = 0; i < 6; i++) 
+		{
+			if (checker[i] >= 3) 
+			{
+				isACategory = TRUE;
+				break;
+			}
+		}
+	} 
+	else if (category == FOUR_OF_A_KIND) 
+	{
+		for (i = 0; i < 6; i++) 
+		{
+			if (checker[i] >= 4) 
+			{
+				isACategory = TRUE;
+				break;
+			}
+		}			
+	} 
+	else if (category == YAHTZEE) 
+	{
+		for (i = 0; i < 6; i++) 
+		{
+			if (checker[i] == 5) 
+			{
+				isACategory = TRUE;
+				break;
+			}
+		}				
+	} 
+	else if (category == FULL_HOUSE) 
+	{
+		for (i = 0; i < 6; i++) 
+		{
+			if (checker[i] == 3 || checker[i] == 2) 
+			{
+				for (j = i + 1; j < 6; j++) 
+				{
+					if (checker[j] == 3 || checker[j] == 2) 
+					{
+						isACategory = TRUE;
+						break;
+					}
+				}
+			}
+		}
+	} 
+	else if (category == LARGE_STRAIGHT) 
+	{
+		if (checker[0] == 0) 
+		{
+			for (i = 1; i < 6; i++) 
+			{
+				if (checker[i] == 0) 
+				{
+					isACategory = FALSE;
+					break;
+				}
+				isACategory = TRUE;
+			}
+		} 
+		else 
+		{
+			for (i = 1; i < 5; i++) 
+			{
+				if (checker[i] == 0) 
+				{
+					isACategory = FALSE;
+					break;
+				}
+				isACategory = TRUE;
+			}
+		}
+	} 
+	else if (category == SMALL_STRAIGHT) 
+	{
+		if ((checker[0] == 0 && checker[1] == 0) ||
+			(checker[0] == 1 && checker[1] == 0)) 
+		{
+			for (i = 2; i < 6; i++) 
+			{
+				if (checker[i] == 0) 
+				{
+					isACategory = FALSE;
+					break;
+				}
+				isACategory = TRUE;
+			}
+		} 
+		else if (checker[0] == 0) 
+		{
+			for (i = 1; i < 5; i++) 
+			{
+				if (checker[i] == 0) 
+				{
+					isACategory = FALSE;
+					break;
+				}
+				isACategory = TRUE;
+			}
+		} 
+		else 
+		{
+			for (i = 0; i < 4; i++) 
+			{
+				if (checker[i] == 0) 
+				{
+					isACategory = FALSE;
+					break;
+				}
+				isACategory = TRUE;
+			}		
+		}
+	}
+
+	return isACategory;
+}
+
+void chooseCategory (int *category)
+{
+	int cursorX = 28,
+		cursorY = 4;
+	char ch = '\0';
+
+	gotoxy (cursorX, cursorY);
+	printf ("%c", CURSOR_SYMBOL);
+	gotoxy (cursorX, cursorY);
+
+	do {
+		ch = getch ();
+		switch(ch) 
+		{ 
+			case ARROW_KEY_UP: 
+				/* UP arrow key is pressed */
+				if (cursorY == 4) 
+				{
+					gotoxy (cursorX, cursorY);
+					printf (" ");
+					cursorY = 16;
+					gotoxy (cursorX, cursorY);
+					printf ("%c", CURSOR_SYMBOL);
+					gotoxy (cursorX, cursorY);
+				}	
+				else if (cursorY > 4) 
+				{
+					gotoxy (cursorX, cursorY);
+					printf (" ");
+					cursorY--;
+					gotoxy (cursorX, cursorY);
+					printf ("%c", CURSOR_SYMBOL);
+					gotoxy (cursorX, cursorY);
+				} 		
+				break;
+
+			case ARROW_KEY_DOWN: 
+				/* DOWN arrow key is pressed */
+				if (cursorY < 16) 
+				{
+					gotoxy (cursorX, cursorY);
+					printf (" ");
+					cursorY++;
+					gotoxy (cursorX, cursorY);
+					printf ("%c", CURSOR_SYMBOL);
+					gotoxy (cursorX, cursorY);
+				} 
+				else if (cursorY == 16) 
+				{
+					gotoxy (cursorX, cursorY);
+					printf (" ");
+					cursorY = 4;
+					gotoxy (cursorX, cursorY);
+					printf ("%c", CURSOR_SYMBOL);
+					gotoxy (cursorX, cursorY);
+				}
+				break;
+		}
+		*category = cursorY - 3;
+	} while (ch != 13);	
+
+	gotoxy (cursorX, cursorY);
+	printf (" ");
+}
+
+void chooseDiceToHold (int holdDice [])
 {
 	int cursorX = 15,
 		cursorY = 4;
@@ -65,7 +510,8 @@ void chooseDiceToHold (int *holdDie1, int *holdDie2, int *holdDie3, int *holdDie
 					cursorY = cursorY + 16;
 					gotoxy (cursorX, cursorY);
 				}	
-				else if (cursorY > 4) {
+				else if (cursorY > 4) 
+				{
 					cursorY -= 4;
 					gotoxy (cursorX, cursorY);
 				} 		
@@ -73,7 +519,8 @@ void chooseDiceToHold (int *holdDie1, int *holdDie2, int *holdDie3, int *holdDie
 
 			case ARROW_KEY_DOWN: 
 				/* DOWN arrow key is pressed */
-				if (cursorY < 20) {
+				if (cursorY < 20) 
+				{
 					cursorY += 4;
 					gotoxy (cursorX, cursorY);
 				} 
@@ -84,43 +531,33 @@ void chooseDiceToHold (int *holdDie1, int *holdDie2, int *holdDie3, int *holdDie
 				}
 				break; 
 
+			case SPACE_BAR:
+				/* SPACEBAR key is pressed */
+				if (!(holdDice [(cursorY / 4) - 1]))
+				{
+					printf ("X");
+					gotoxy (cursorX, cursorY);
+				}
+				else
+				{
+					printf (" ");
+					gotoxy (cursorX, cursorY);
+				}
 
-			case 'h':
-				printf ("H");
-				gotoxy (cursorX, cursorY);
-
-				if (cursorY == 4) *holdDie1 = TRUE;
-				if (cursorY == 8) *holdDie2 = TRUE;
-				if (cursorY == 12) *holdDie3 = TRUE;
-				if (cursorY == 16) *holdDie4 = TRUE;
-				if (cursorY == 20) *holdDie5 = TRUE;
-
-				break;
-
-			case 'u':
-			case 'U':
-				printf (" ");
-				gotoxy (cursorX, cursorY);
-
-				if (cursorY == 4) *holdDie1 = FALSE;
-				if (cursorY == 8) *holdDie2 = FALSE;
-				if (cursorY == 12) *holdDie3 = FALSE;
-				if (cursorY == 16) *holdDie4 = FALSE;
-				if (cursorY == 20) *holdDie5 = FALSE;
-
+				holdDice [(cursorY / 4) - 1] = !(holdDice [(cursorY / 4) - 1]);
 				break;
 		}
 	} while (ch != 13);
 }
 
-void updateDiceArea (int die1, int die2, int die3, int die4, int die5, 
-	                 int holdDie1, int holdDie2, int holdDie3, int holdDie4, int holdDie5, int rolls)
+void updateDiceArea (int dice[], int holdDice[], int rolls)
 {
-	if (!holdDie1) drawDie (die1, 3, 2);
-	if (!holdDie2) drawDie (die2, 3, 2 + 4);
-	if (!holdDie3) drawDie (die3, 3, 2 + 8);
-	if (!holdDie4) drawDie (die4, 3, 2 + 12);
-	if (!holdDie5) drawDie (die5, 3, 2 + 16);
+	int i = 0;
+
+	for (i = 0; i < NUMBER_OF_DICE; i++)
+	{
+		if (!holdDice [i]) drawDie (dice [i], 3, 2 + (i * 4));
+	}
 
 	gotoxy (18, 2);
 	printf ("%d", rolls);
@@ -130,6 +567,10 @@ void drawDie (int dieValue, int x, int y)
 {
 	switch (dieValue)
 	{
+		case 0:
+			dieBlank (x, y);
+			break;
+
 		case 1:
 			dieOne (x, y);
 			break;
@@ -156,20 +597,18 @@ void drawDie (int dieValue, int x, int y)
 	}
 }
 
-void rollDice (int *die1, int *die2, int *die3, int *die4, int *die5,
-	           int holdDie1, int holdDie2, int holdDie3, int holdDie4, int holdDie5)
+void rollDice (int dice [], int holdDice [])
 {
-	if (!holdDie1) *die1 = getRandomNumber (6);
-	if (!holdDie2) *die2 = getRandomNumber (6);
-	if (!holdDie3) *die3 = getRandomNumber (6);
-	if (!holdDie4) *die4 = getRandomNumber (6);
-	if (!holdDie5) *die5 = getRandomNumber (6);
+	int i = 0;
+
+	for (i = 0; i < NUMBER_OF_DICE; i++)
+	{
+		if (!holdDice [i]) dice [i] = getRandomNumber (6);
+	}
 }
 
 void setupGameBoard (void)
 {
-	int dieCounter = 0, yPositionDie = 2;
-
 	printf ("\n\n");
     printf ("             ROLL:0             CATEGORY            PLAYER 1   PLAYER 2\n\n");
 	printf ("                          [   ] ONES                [      ]   [      ]\n");
@@ -177,23 +616,17 @@ void setupGameBoard (void)
 	printf ("                          [   ] THREES              [      ]   [      ]\n");
 	printf ("                          [   ] FOURS               [      ]   [      ]\n");
 	printf ("                          [   ] FIVES               [      ]   [      ]\n");
-	printf ("                          [   ] SIXES               [      ]   [      ]\n\n");
+	printf ("                          [   ] SIXES               [      ]   [      ]\n");
 
-	printf ("                          [   ] THREE OF A KIND     [      ]   [      ]\n");
-	printf ("                          [   ] FOUR OF A KIND      [      ]   [      ]\n");
-	printf ("                          [   ] FULL HOUSE(25)      [      ]   [      ]\n");
-	printf ("                          [   ] SMALL STRAIGHT(30)  [      ]   [      ]\n");
-	printf ("                          [   ] LARGE STRAIGHT(40)  [      ]   [      ]\n");
-	printf ("                          [   ] YAHTZEE!(50)        [      ]   [      ]\n");
-	printf ("                          [   ] CHANCE              [      ]   [      ]\n\n");
+	printf ("                          [   ]  THREE OF A KIND    [      ]   [      ]\n");
+	printf ("                          [   ]  FOUR OF A KIND     [      ]   [      ]\n");
+	printf ("                          [   ]  FULL HOUSE(25)     [      ]   [      ]\n");
+	printf ("                          [   ]  SMALL STRAIGHT(30) [      ]   [      ]\n");
+	printf ("                          [   ]  LARGE STRAIGHT(40) [      ]   [      ]\n");
+	printf ("                          [   ]  YAHTZEE!(50)       [      ]   [      ]\n");
+	printf ("                          [   ]  CHANCE             [      ]   [      ]\n\n\n");
 
 	printf ("                                TOTAL               [      ]   [      ]\n");
-
-	for (dieCounter = 0; dieCounter < NUMBER_OF_DICE; dieCounter++)
-	{
-		dieBlank (3, yPositionDie);
-		yPositionDie += 4;
-	}
 
 	/* dice and category borders */
 	borderScreen (20, 1, 
@@ -272,13 +705,24 @@ void printGameRules (void)
 	printf ("   -----------------+--------------------------------+-----------------------\n");
     printf ("   Large straight   |     A sequence of five dice    |            40         \n");
 	printf ("   -----------------+--------------------------------+-----------------------\n");
+	printf ("\n\n");
+	printf ("                        << Press <ENTER> to continue... >>                     ");
+	printScreenBorder ();
+	pressEnter ();
+
+	system ("cls");
+	printf ("\n\n");
+    printf ("         NAME       |           COMBINATION          |          SCORE\n");
+	printf ("   -----------------+--------------------------------+-----------------------\n");
     printf ("   Yahtzee (think   |  Five dice with the same face  |            50         \n");
 	printf ("   five-of-a-kind)  |                                |                       \n");
 	printf ("   -----------------+--------------------------------+-----------------------\n");
 	printf ("   Chance           |  May be used for any sequence  | Sum of all face values\n");
 	printf ("                    | of dice; this is the catch all |       on the 5 dice   \n");
 	printf ("                    |           combination          |                       \n");
-	printf ("                << Press <ENTER> to return to MAIN MENU >>                     ");
+	printf ("   -----------------+--------------------------------+-----------------------\n");
+	printf ("\n\n");
+	printf ("                    << Press <ENTER> to return to MAIN MENU >>                 ");
 	printScreenBorder ();
 	pressEnter ();
 }
@@ -305,6 +749,7 @@ void printGoodbye (void)
 	printf ("Thanks for playing Yahtzee! Goodbye!");
     printScreenBorder ();
 	pressEnter ();
+	system ("cls");
 }
 
 
@@ -361,7 +806,8 @@ int chooseMenuItem (void)
 
 					menuItem = EXIT_GAME;
 				}	
-				else if (cursorY > MENU_Y) {
+				else if (cursorY > MENU_Y) 
+				{
 					gotoxy (cursorX, cursorY);
 					printf (" ");
 					cursorY--;
@@ -375,7 +821,8 @@ int chooseMenuItem (void)
 
 			case ARROW_KEY_DOWN: 
 				/* DOWN arrow key is pressed */
-				if (cursorY < MENU_Y + 2) {
+				if (cursorY < MENU_Y + 2)
+				{
 					gotoxy (cursorX, cursorY);
 					printf (" ");
 					cursorY++;

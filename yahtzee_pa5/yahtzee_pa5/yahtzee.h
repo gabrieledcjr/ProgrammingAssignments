@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <Windows.h>	/* system() */
+#include <ctype.h>
 
 #define TRUE  1
 #define FALSE 0
@@ -21,6 +22,7 @@
 
 #define ARROW_KEY_UP    72
 #define ARROW_KEY_DOWN  80
+#define SPACE_BAR       32
 
 #define CURSOR_SYMBOL  219
 
@@ -39,16 +41,20 @@
 #define LARGE_STRAIGHT   11 
 #define YAHTZEE          12 
 #define CHANCE           13
+#define NUMBER_OF_CATEGORIES  13
 
-
+#define BONUS_RANGE   63
+#define BONUS_POINTS  35
 
 void startNewGame (void);
-void chooseDiceToHold (int *holdDie1, int *holdDie2, int *holdDie3, int *holdDie4, int *holdDie5);
-void updateDiceArea (int die1, int die2, int die3, int die4, int die5, 
-	                 int holdDie1, int holdDie2, int holdDie3, int holdDie4, int holdDie5, int rolls);
+void updateScoreBoard (int playerNumber, int category, int score);
+void computeCategoryScore (int dice [], int category, int *score);
+int checkCategory (int dice [], int category);
+void chooseCategory (int *category);
+void chooseDiceToHold (int holdDice []);
+void updateDiceArea (int dice [], int holdDice [], int rolls);
 void drawDie (int dieValue, int x, int y);
-void rollDice (int *die1, int *die2, int *die3, int *die4, int *die5,
-	           int holdDie1, int holdDie2, int holdDie3, int holdDie4, int holdDie5);
+void rollDice (int dice [], int holdDice []);
 void setupGameBoard (void);
 
 void printGameRules (void);
