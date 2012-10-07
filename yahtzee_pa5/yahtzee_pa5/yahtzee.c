@@ -1,5 +1,65 @@
 #include "yahtzee.h"
 
+void printGameRules (void)
+{
+	system ("cls");
+
+	printf ("\n\n\n");
+	printf ("   THE RULES OF YAHTZEE:\n\n");
+	printf ("   The scorecard used for Yahtzee is composed of two sections. A upper\n");
+	printf ("   section and a lower section. A total of thirteen boxes or thirteen scoring\n");
+	printf ("   combinations are divided amongst the sections. The upper section consists\n");
+	printf ("   of boxes that are scored by summing the value of the dice matching the\n");
+	printf ("   faces of the box. If a player rolls four 3's, then the score placed in the\n");
+	printf ("   3's box is the sum of the dice which is 12. Once a player has chosen to\n");
+	printf ("   score a box, it may not be changed and the combination is no longer in\n");
+	printf ("   play for future rounds. If the sum of the scores in the upper section is\n");
+	printf ("   greater than or equal to 63, then 35 more points are added to the players\n");
+	printf ("   overall score as a bonus. The lower section contains a number of poker\n");
+	printf ("   like combinations. See the table provided below:\n");
+	printf ("\n\n");
+	printf ("                        << Press <ENTER> to continue... >>");
+	printScreenBorder ();
+	pressEnter ();
+
+	system ("cls");
+
+	printf ("\n\n");
+    printf ("         NAME       |           COMBINATION          |          SCORE\n");
+	printf ("   --------------------------------------------------------------------------\n");
+    printf ("   Three-of-a-kind  | Three dice with the same face  | Sum of all face values\n"); 
+    printf ("                    |                                |     on the 5 dice\n");
+	printf ("   --------------------------------------------------------------------------\n");
+	printf ("   Four-of-a-kind   |  Four dice with the same face  | Sum of all face values\n");
+	printf ("                    |                                |     on the 5 dice\n");
+	printf ("   --------------------------------------------------------------------------\n");
+	printf ("   Full house       | One pair and a three-of-a-kind |            25\n");
+	printf ("   --------------------------------------------------------------------------\n");
+	printf ("   Small straight   |     A sequence of four dice    |            30\n");
+	printf ("   --------------------------------------------------------------------------\n");
+    printf ("   Large straight   |     A sequence of five dice    |            40\n");
+	printf ("   --------------------------------------------------------------------------\n");
+    printf ("   Yahtzee (think   |  Five dice with the same face  |            50\n");
+	printf ("   five-of-a-kind)  |                                |\n");
+	printf ("   --------------------------------------------------------------------------\n");
+	printf ("   Chance           |  May be used for any sequence  | Sum of all face values\n");
+	printf ("                    | of dice; this is the catch all |       on the 5 dice\n");
+	printf ("                    |           combination          |\n");
+	printf ("                << Press <ENTER> to return to MAIN MENU >>");
+	printScreenBorder ();
+	pressEnter ();
+}
+
+void printGoodbye (void)
+{
+	system ("cls");
+
+	gotoxy (((SCREEN_BORDER_LOWER_X - SCREEN_BORDER_UPPER_X) / 2) - 16,
+		     (SCREEN_BORDER_LOWER_Y - SCREEN_BORDER_UPPER_Y) / 2);
+	printf ("Thanks for playing Yahtzee! Goodbye!");
+    printScreenBorder ();
+	pressEnter ();
+}
 
 /*************************************************************
  * Function: chooseMenuItem ()                               *
@@ -95,9 +155,7 @@ int chooseMenuItem (void)
 void printMainScreen (void)
 {
 	system ("cls");
-	/* draws border for the window */
-	borderScreen (SCREEN_BORDER_UPPER_X, SCREEN_BORDER_UPPER_Y, 
-		          SCREEN_BORDER_LOWER_X, SCREEN_BORDER_LOWER_Y);
+	printScreenBorder ();
 	/* prints main title on screen */
 	
 	printTitle (((SCREEN_BORDER_LOWER_X - SCREEN_BORDER_UPPER_X) / 2) - 27, 
@@ -111,6 +169,23 @@ void printMainScreen (void)
 
 	/* prints menu on screen */
 	printMenu (MENU_X, MENU_Y);
+}
+
+/*************************************************************
+ * Function: printScreenBorder ()                            *
+ * Date Created: October 6, 2012                             *
+ * Date Last Modified: October 6, 2012                       *
+ * Description: This function prints border screen           *
+ * Input parameters: void                                    *
+ * Returns: void                                             *
+ * Preconditions: none                                       *
+ * Postconditions: Prints a screen border                    *
+ *************************************************************/
+void printScreenBorder (void)
+{
+	/* draws border for the window */
+	borderScreen (SCREEN_BORDER_UPPER_X, SCREEN_BORDER_UPPER_Y, 
+		          SCREEN_BORDER_LOWER_X, SCREEN_BORDER_LOWER_Y);
 }
 
 /*************************************************************
@@ -231,4 +306,28 @@ void gotoxy(int x, int y)
     pos.Y = y;
 
     SetConsoleCursorPosition(stdOutput, pos);
+}
+
+/*************************************************************
+ * Function: pressEnter ()                                   *
+ * Date Created: October 1, 2012                             *
+ * Date Last Modified: October 1, 2012                       *
+ * Description: This function requires the user press the    *
+ *              Enter key only. If input is invalid, it will *
+ *              wait and ask user to press the Enter key.    *
+ * Input parameters: void                                    *
+ * Returns: void                                             *
+ * Preconditions: None                                       *
+ * Postconditions: User pressed the Enter key. Program       *
+ *                 continues to execute where it left off    *
+ *************************************************************/
+void pressEnter (void)
+{
+	char ch = '\0';
+
+	do
+	{
+		fflush (stdin);
+		scanf ("%c", &ch);
+	} while (ch != '\n');
 }

@@ -33,12 +33,18 @@
 #define CHANCE           13
 
 
+void printGameRules (void);
+void printGoodbye (void);
+
 int chooseMenuItem (void);
 void printMainScreen (void);
+void printScreenBorder (void);
 void printMenu (int x, int y);
 void printTitle (int x, int y);
 void borderScreen (int upperLeftCornerX, int upperLeftCornerY,
 				   int lowerRightCornerX, int lowerRightCornerY);
+
 void gotoxy(int x, int y);
+void pressEnter (void);
 
 #endif

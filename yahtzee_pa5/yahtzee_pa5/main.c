@@ -11,10 +11,22 @@ int main (void)
 {
 	int menu = 0;
 
-	printMainScreen ();
-	menu = chooseMenuItem ();
-
-	getchar ();
+	do {
+		printMainScreen ();
+		menu = chooseMenuItem ();
+		
+		switch (menu)
+		{
+			case START_GAME:
+				break;
+			case GAME_RULES:
+				printGameRules ();
+				break;
+			case EXIT_GAME:
+				printGoodbye ();
+				break;
+		}
+	} while (menu != EXIT_GAME);
 
 	return 0;
 }
