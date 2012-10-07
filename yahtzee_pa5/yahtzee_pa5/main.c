@@ -11,6 +11,8 @@ int main (void)
 {
 	int menu = 0;
 
+	init ();
+
 	do {
 		printMainScreen ();
 		menu = chooseMenuItem ();
@@ -18,6 +20,7 @@ int main (void)
 		switch (menu)
 		{
 			case START_GAME:
+				startNewGame ();
 				break;
 			case GAME_RULES:
 				printGameRules ();
