@@ -9,7 +9,10 @@
 
 int main (void)
 {
+	int menu = 0;
+
 	printMainScreen ();
+	menu = chooseMenuItem ();
 
 	getchar ();
 

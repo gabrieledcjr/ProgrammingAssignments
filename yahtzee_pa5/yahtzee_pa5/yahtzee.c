@@ -2,6 +2,86 @@
 
 
 /*************************************************************
+ * Function: chooseMenuItem ()                               *
+ * Date Created: October 6, 2012                             *
+ * Date Last Modified: October 6, 2012                       *
+ * Description: This function lets the user pick a menu item *
+ * Input parameters: void                                    *
+ * Returns: chosen menu item                                 *
+ * Preconditions: gotoxy () function must be defined         *
+ * Postconditions: value of menu item returned               *
+ *************************************************************/
+int chooseMenuItem (void)
+{
+	int cursorX = MENU_X + 2,
+		cursorY = MENU_Y,
+		menuItem = START_GAME;
+	char ch = '\0';
+
+	gotoxy (cursorX, cursorY);
+	printf ("%c", CURSOR_SYMBOL);
+	gotoxy (cursorX, cursorY);
+
+	do {
+		ch = getch ();
+		switch(ch) 
+		{ 
+			case 72: 
+				/* UP arrow key is pressed */
+				if (cursorY == MENU_Y) 
+				{
+					gotoxy (cursorX, cursorY);
+					printf (" ");
+					cursorY = MENU_Y + 2;
+					gotoxy (cursorX, cursorY);
+					printf ("%c", CURSOR_SYMBOL);
+					gotoxy (cursorX, cursorY);
+
+					menuItem = EXIT_GAME;
+				}	
+				else if (cursorY > MENU_Y) {
+					gotoxy (cursorX, cursorY);
+					printf (" ");
+					cursorY--;
+					gotoxy (cursorX, cursorY);
+					printf ("%c", CURSOR_SYMBOL);
+					gotoxy (cursorX, cursorY);
+
+					menuItem--;
+				} 		
+				break;
+
+			case 80: 
+				/* DOWN arrow key is pressed */
+				if (cursorY < MENU_Y + 2) {
+					gotoxy (cursorX, cursorY);
+					printf (" ");
+					cursorY++;
+					gotoxy (cursorX, cursorY);
+					printf ("%c", CURSOR_SYMBOL);
+					gotoxy (cursorX, cursorY);
+
+					menuItem++;
+				} 
+				else if (cursorY == MENU_Y + 2) 
+				{
+					gotoxy (cursorX, cursorY);
+					printf (" ");
+					cursorY = MENU_Y;
+					gotoxy (cursorX, cursorY);
+					printf ("%c", CURSOR_SYMBOL);
+					gotoxy (cursorX, cursorY);
+
+					menuItem = START_GAME;
+				}
+				break; 
+		}
+	} while (ch != 13);
+
+	return menuItem;
+}
+
+/*************************************************************
  * Function: mainScreen ()                                   *
  * Date Created: October 6, 2012                             *
  * Date Last Modified: October 6, 2012                       *
@@ -16,12 +96,21 @@ void printMainScreen (void)
 {
 	system ("cls");
 	/* draws border for the window */
-	borderScreen (1, 1, 78, 23);
-	printTitle (11, 3);
+	borderScreen (SCREEN_BORDER_UPPER_X, SCREEN_BORDER_UPPER_Y, 
+		          SCREEN_BORDER_LOWER_X, SCREEN_BORDER_LOWER_Y);
+	/* prints main title on screen */
+	
+	printTitle (((SCREEN_BORDER_LOWER_X - SCREEN_BORDER_UPPER_X) / 2) - 27, 
+		          SCREEN_BORDER_UPPER_Y + 2);
 
 	/* draws border for the menu */
-	borderScreen (27, 10, 55, (10 + 6));
-	printMenu (30, 12);
+	borderScreen (((SCREEN_BORDER_LOWER_X - SCREEN_BORDER_UPPER_X) / 2) - 11, 
+		            SCREEN_BORDER_UPPER_Y + 9, 
+		          ((SCREEN_BORDER_LOWER_X - SCREEN_BORDER_UPPER_X) / 2) + 17, 
+				    SCREEN_BORDER_UPPER_Y + 15);
+
+	/* prints menu on screen */
+	printMenu (MENU_X, MENU_Y);
 }
 
 /*************************************************************

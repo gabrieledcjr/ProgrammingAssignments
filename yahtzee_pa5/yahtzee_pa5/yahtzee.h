@@ -8,6 +8,16 @@
 #define GAME_RULES   2
 #define EXIT_GAME    3
 
+#define SCREEN_BORDER_UPPER_X   1
+#define SCREEN_BORDER_UPPER_Y   1
+#define SCREEN_BORDER_LOWER_X  78
+#define SCREEN_BORDER_LOWER_Y  23
+
+#define MENU_X  30
+#define MENU_Y  12
+
+#define CURSOR_SYMBOL  219
+
 #define ONES              1 
 #define TWOS              2 
 #define THREES            3 
@@ -22,6 +32,8 @@
 #define YAHTZEE          12 
 #define CHANCE           13
 
+
+int chooseMenuItem (void);
 void printMainScreen (void);
 void printMenu (int x, int y);
 void printTitle (int x, int y);
