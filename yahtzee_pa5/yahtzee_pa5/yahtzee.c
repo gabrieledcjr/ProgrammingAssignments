@@ -119,7 +119,7 @@ void startNewGame (void)
 	} while (numberOfPlay < 26);
 
 	gotoxy (40, 17);
-	printf ("UPPER TOTAL:");
+	printf ("UPPER SCORE:");
     gotoxy (40, 18);
 	printf ("      BONUS:");
 
