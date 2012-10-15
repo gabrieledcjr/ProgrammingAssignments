@@ -1,5 +1,29 @@
+/*************************************************************************
+ * Filename: yahtzee.c                                                   *
+ * Programmer: Gabriel V. de a Cruz Jr.                                  *
+ * Class: CptS 121, Fall 2012 ; Lab Section 7                            *
+ * Programming Assignment 4: A Game of Yahtzee!                          *
+ * Date: October 6, 2012                                                 *
+ *                                                                       *
+ * Description: This program implements the Yahtzee game. This file      *
+ *              includes all the function definitions whose prototypes,  *
+ *              standard libraries and constant macros are declared in   *
+ *              the file yahtzee.h                                       *
+ *************************************************************************/
 #include "yahtzee.h"
 
+/*************************************************************
+ * Function: startNewGame ()                                 *
+ * Date Created: October 6, 2012                             *
+ * Date Last Modified: October 7, 2012                       *
+ * Description: This function is the main function to start  *
+ *              a game of Yahtzee.                           *
+ * Input parameters: void                                    *
+ * Returns: void                                             *
+ * Preconditions: system (), gotoxy (), pressEnter must be   *
+ *                defined and Windows.h must be included     *
+ * Postconditions: Game ended                                *
+ *************************************************************/
 void startNewGame (void)
 {
 	int dice[5] = {0, 0, 0, 0, 0};
@@ -161,6 +185,19 @@ void startNewGame (void)
 	pressEnter ();
 }
 
+/*************************************************************
+ * Function: updateScoreBoard ()                             *
+ * Date Created: October 6, 2012                             *
+ * Date Last Modified: October 7, 2012                       *
+ * Description: This function updates the score board on     *
+ *              screen                                       *
+ * Input parameters: player number, category to update and   *
+ *                   score earned                            *
+ * Returns: void                                             *
+ * Preconditions: system () and gotoxy () must be defined    *
+ *                and Windows.h must be included             *
+ * Postconditions: Scoreboard updated on screen              *
+ *************************************************************/
 void updateScoreBoard (int playerNumber, int category, int score)
 {
 	int cursorX = 54, cursorY = 3;
@@ -233,6 +270,19 @@ void updateScoreBoard (int playerNumber, int category, int score)
 	}
 }
 
+/*************************************************************
+ * Function: computeCategoryScore ()                         *
+ * Date Created: October 6, 2012                             *
+ * Date Last Modified: October 7, 2012                       *
+ * Description: This function computes the score for the     *
+ *              specified category                           *
+ * Input parameters: dice array, category, score as result   *
+ * Returns: void                                             *
+ * Preconditions: system () and gotoxy () must be defined    *
+ *                and Windows.h must be included             *
+ * Postconditions: score value is updated from the calling   *
+ *                 function.                                 *
+ *************************************************************/
 void computeCategoryScore (int dice [], int category, int *score)
 {
 	int i = 0;
@@ -286,6 +336,19 @@ void computeCategoryScore (int dice [], int category, int *score)
 	}
 }
 
+/*************************************************************
+ * Function: checkCategory ()                                *
+ * Date Created: October 6, 2012                             *
+ * Date Last Modified: October 15, 2012                      *
+ * Description: This function checks the category of the     *
+ *              rolled dice                                  *
+ * Input parameters: dice array, category, score as result   *
+ * Returns: void                                             *
+ * Preconditions: system () and gotoxy () must be defined    *
+ *                and Windows.h must be included             *
+ * Postconditions: score value is updated from the calling   *
+ *                 function.                                 *
+ *************************************************************/
 int checkCategory (int dice [], int category)
 {
 	int isACategory = FALSE;
@@ -294,7 +357,8 @@ int checkCategory (int dice [], int category)
 
 	for (i = 0; i < NUMBER_OF_DICE; i++)
 	{
-		switch (dice [i])
+		checker [dice [i] - 1]++;
+		/*switch (dice [i])
 		{
 			case 1: checker [0]++; break;
 			case 2: checker [1]++; break;
@@ -302,7 +366,7 @@ int checkCategory (int dice [], int category)
 			case 4: checker [3]++; break;
 			case 5: checker [4]++; break;
 			case 6: checker [5]++; break;
-		}
+		}*/
 	}
 
 	if (category == THREE_OF_A_KIND) 
@@ -563,6 +627,19 @@ void updateDiceArea (int dice[], int holdDice[], int rolls)
 	printf ("%d", rolls);
 }
 
+/*************************************************************
+ * Function: drawDie ()                                      *
+ * Date Created: October 6, 2012                             *
+ * Date Last Modified: October 6, 2012                       *
+ * Description: This function draws a dice on the screen     *
+ *              specified with the face value and top left   *
+ *              x and y position                             *
+ * Input parameters: face value of a die and top left x and  *
+ *                   y position                              *
+ * Returns: void                                             *
+ * Preconditions: die<NAME> () functions are defined         *
+ * Postconditions: A specified die is drawn on the screen    *
+ *************************************************************/
 void drawDie (int dieValue, int x, int y)
 {
 	switch (dieValue)
@@ -597,6 +674,19 @@ void drawDie (int dieValue, int x, int y)
 	}
 }
 
+/*************************************************************
+ * Function: rollDice ()                                     *
+ * Date Created: October 6, 2012                             *
+ * Date Last Modified: October 6, 2012                       *
+ * Description: This function simulates rolling a dice and   *
+ *              retrieve random numbers for the array that   *
+ *              holds the values for the 5 dice              *
+ * Input parameters: void                                    *
+ * Returns: void                                             *
+ * Preconditions: getRandomNumber () must be defined         *
+ * Postconditions: Randomly selected values for the dice     *
+ *                 successfully retrieved                    *
+ *************************************************************/
 void rollDice (int dice [], int holdDice [])
 {
 	int i = 0;
@@ -607,6 +697,18 @@ void rollDice (int dice [], int holdDice [])
 	}
 }
 
+/*************************************************************
+ * Function: setupGameBoard ()                               *
+ * Date Created: October 6, 2012                             *
+ * Date Last Modified: October 6, 2012                       *
+ * Description: This function sets up the board for the area *
+ *              for dices and categories to play with border *
+ * Input parameters: void                                    *
+ * Returns: void                                             *
+ * Preconditions: borderScreen (), printScreenBorder () and  *
+ *                gotoxy () must be defined                  *
+ * Postconditions: Board successfully set up                 *
+ *************************************************************/
 void setupGameBoard (void)
 {
 	printf ("\n\n");

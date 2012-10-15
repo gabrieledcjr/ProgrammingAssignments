@@ -1,32 +1,45 @@
+/*************************************************************************
+ * Filename: yahtzee.h                                                   *
+ * Programmer: Gabriel V. de a Cruz Jr.                                  *
+ * Class: CptS 121, Fall 2012 ; Lab Section 7                            *
+ * Programming Assignment 4: A Game of Yahtzee!                          *
+ * Date: October 6, 2012                                                 *
+ *                                                                       *
+ * Description: This program implements the Yahtzee game. This file      *
+ *              includes all the required standard libraries, constant   *
+ *              macros and user-defined function prototypes. Function    *
+ *              definitions are located at the file yahtzee.c            *
+ *************************************************************************/
 #ifndef YAHTZEE_H
 #define YAHTZEE_H
 
 #include <stdio.h>
 #include <Windows.h>	/* system() */
 
-#define TRUE  1
-#define FALSE 0
+#define TRUE  1         /* boolean value for true */
+#define FALSE 0         /* boolean value for false */
 
-#define START_GAME   1
-#define GAME_RULES   2
-#define EXIT_GAME    3
+#define START_GAME   1         /* value to identify start game */
+#define GAME_RULES   2         /* value to identify game rules */
+#define EXIT_GAME    3         /* value to identify exit game */
 
-#define SCREEN_BORDER_UPPER_X   1
-#define SCREEN_BORDER_UPPER_Y   1
-#define SCREEN_BORDER_LOWER_X  78
-#define SCREEN_BORDER_LOWER_Y  23
+#define SCREEN_BORDER_UPPER_X   1     /* predefined top left x position of border */
+#define SCREEN_BORDER_UPPER_Y   1     /* predefined top left y position of border */
+#define SCREEN_BORDER_LOWER_X  78     /* predefined lower right x position of border */
+#define SCREEN_BORDER_LOWER_Y  23     /* predefined lower right y position of border */
 
-#define MENU_X  30
-#define MENU_Y  12
+#define MENU_X  30              /* predefined top left x position of menu */
+#define MENU_Y  12              /* predefined top left y position of menu */
 
-#define ARROW_KEY_UP    72
-#define ARROW_KEY_DOWN  80
-#define SPACE_BAR       32
+#define ARROW_KEY_UP    72      /* value for arrow key up */
+#define ARROW_KEY_DOWN  80      /* value for arrow key down */
+#define SPACE_BAR       32      /* value for space bar */
 
-#define CURSOR_SYMBOL  219
+#define CURSOR_SYMBOL  219		/* ASCII value of a block */
 
-#define NUMBER_OF_DICE  5
+#define NUMBER_OF_DICE  5		/* defines number of dice used */
 
+/* Categories */
 #define ONES              1 
 #define TWOS              2 
 #define THREES            3 
