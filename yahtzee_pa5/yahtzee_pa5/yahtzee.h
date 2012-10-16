@@ -15,6 +15,7 @@
 
 #include <stdio.h>
 #include <Windows.h>	/* system() */
+#include <conio.h>		/* getch() */
 
 #define TRUE  1         /* boolean value for true */
 #define FALSE 0         /* boolean value for false */
@@ -59,15 +60,17 @@
 #define BONUS_POINTS  35
 
 void startNewGame (void);
+void setupGameBoard (void);
+void rollDice (int dice [], int holdDice []);
+void drawDie (int dieValue, int x, int y);
+void chooseDiceToHold (int holdDice []);
+void updateDiceArea (int dice [], int holdDice [], int rolls);
+void finalizeScoreBoard (int scoreBoard [][14]);
+void printMessageBox (char msgLine1[], char msgLine2[], int number);
 void updateScoreBoard (int playerNumber, int category, int score);
 void computeCategoryScore (int dice [], int category, int *score);
 int checkCategory (int dice [], int category);
 void chooseCategory (int *category);
-void chooseDiceToHold (int holdDice []);
-void updateDiceArea (int dice [], int holdDice [], int rolls);
-void drawDie (int dieValue, int x, int y);
-void rollDice (int dice [], int holdDice []);
-void setupGameBoard (void);
 
 void printGameRules (void);
 void printGoodbye (void);

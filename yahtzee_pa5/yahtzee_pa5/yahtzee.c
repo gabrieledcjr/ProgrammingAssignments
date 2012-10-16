@@ -26,22 +26,26 @@
  *************************************************************/
 void startNewGame (void)
 {
-	int dice[5] = {0, 0, 0, 0, 0};
-	int holdDice[5] = {0, 0, 0, 0, 0};
-	int i = 0;
+	int dice[5] = {0};              /* tracks dice values every play */
+	int holdDice[5] = {0};          /* tracks what dice player wants to hold or unhold */
 
-	int numberOfRolls = 0;
-	int playerNumber = 1;		/* which player is playing */
-	int category = 0;
-	int score = 0;
-	int categorySelected [2][13];
-	int scoreBoard [2][14];
+	int categorySelected [2][13] = {{0}};   /* tracks the category already selected */
+	int scoreBoard [2][14] = {{0}};         /* tracks the score for every category */
 
-	int numberOfPlay = 0;
+	int i = 0;                      /* generic counter for loops */
+	int numberOfRolls = 0;			/* tracks number of rolls */
+	int playerNumber = 1;			/* identifies which player is playing */
+	int category = 0;				/* category chosen by player on a play */
+	int score = 0;                  /* score of a category chosen by a player on a play */
+	int numberOfPlay = 0;           /* tracks number of play */
+	int isGameOver = FALSE;         /* a flag that determines if game has ended */
 
-	char isRollAgain = '\0';
+	char isRollAgain = '\0';        /* a flag that determines if player wants to roll dice again */
 
+	/* clears the screen */
 	system ("cls");	
+
+	/* sets up the game board */
 	setupGameBoard ();
 
 	do
@@ -64,83 +68,359 @@ void startNewGame (void)
 		/* resets the dice are to blank */
 		updateDiceArea (dice, holdDice, numberOfRolls);
             
-
-		gotoxy (21, 21);
-		printf ("PLAYER %d: Press <ENTER> to roll the dice                 ", playerNumber + 1);
-		gotoxy (21, 22);
-		printf ("                                                         ");
+		/* Prompts user to press ENTER key to roll the dice */
+		printMessageBox ("Press <ENTER> to roll the dice", "", playerNumber + 1);
 		pressEnter ();
 
 		do
 		{
+			/* Get random values for the dice also considering
+			   if a die was held by player or not */
 			rollDice (dice, holdDice);
+
+			/* Increments number of rolls */
 			numberOfRolls++;
+
+			/* Updates the dice area on screen */
 			updateDiceArea (dice, holdDice, numberOfRolls);
-			if (numberOfRolls == 3) break;
 
-			gotoxy (21, 21);
-			printf ("PLAYER %d: Press <SPACEBAR> to hold or unhold a die     ", playerNumber + 1);
-			gotoxy (21, 22);
-			printf ("          Press <ENTER> to roll the dice                 ");
+			/* breaks out of loop if user has rolled 3 times  */
+			if (numberOfRolls == 3) break; 
 
+			/* Prompts if player wants to hold or unhold a die  */
+			printMessageBox ("Press <SPACEBAR> to hold or unhold a die", 
+				             "          Press <ENTER> to roll the dice", playerNumber + 1);
+
+			/* Waits for user input to what dice to hold or unhold */
 			chooseDiceToHold (holdDice);
 
-			gotoxy (21, 21);
-			printf ("                                                         ");
-			gotoxy (21, 22);
-			printf ("                                                         ");
+
+			printMessageBox ("Roll Again? [Y/N]:", "", playerNumber + 1);
 
 			do {
-				gotoxy (21, 21);
-				printf ("PLAYER %d: Roll Again? [Y/N]: ", playerNumber + 1);
+				/* Input Validation Loop */
+				/* Waits for user to input 'Y' or 'N' */
+				gotoxy (50, 21);
 				isRollAgain = getche ();
 
 				if (tolower (isRollAgain) != 'y' && tolower (isRollAgain) != 'n')
 				{
-					gotoxy (21, 22);
-					printf ("          Invalid input!                                 ");
+					/* Alerts user at the message box for invalid input */
+					printMessageBox ("Roll Again? [Y/N]:", 
+						             "          Invalid input!", playerNumber + 1);
 				}
-				else break;
+				else break; /* breaks out of loop if user input is valid */
 
 			} while (1);
 
+			/* breaks out of loop if user don't want to roll again */
 			if (tolower (isRollAgain) == 'n') break;
 
 		} while (1);
 
 		do {
-			gotoxy (21, 21);
-			printf ("PLAYER %d: Choose a category and press <ENTER>            ", playerNumber + 1);
-			gotoxy (21, 22);
-			printf ("                                                         ");
-		
+			/* Input Validation Loop */
+			/* Prompts user at the message box to pick a category */
+			printMessageBox ("Choose a category and press <ENTER>", "", playerNumber + 1);
+			
+			/* Waits for user to select a category */
 			chooseCategory (&category);
+
 			if (categorySelected [playerNumber][category - 1] == 1)
 			{
-				gotoxy (21, 21);
-				printf ("PLAYER %d: ERROR! Category already selected               ", playerNumber + 1);
-				gotoxy (21, 22);
-				printf ("          Press <ENTER> to select a new category         ");
+				/* Alets user at the message box that category has already been selected */
+				printMessageBox ("ERROR! Category already selected", 
+					             "          Press <ENTER> to select a new category", playerNumber + 1);
 				pressEnter ();
 			}
 			else break;
 
-		} while (1);
-
-		gotoxy (21, 21);
-		printf ("PLAYER %d: Chosen category %d and press <ENTER>           ", playerNumber + 1, category);		
+		} while (1);	
 		
+		/* Computes score for the category selected */
 		computeCategoryScore (dice, category, &score);
 
+		/* Updates scoreBoard array with category score */
 		scoreBoard [playerNumber][category - 1] = score;
-		categorySelected [playerNumber][category - 1] = 1;  /* category is selected */
+		
+		/* Category flagged that it has been selected */
+		categorySelected [playerNumber][category - 1] = 1;  
+		
+		/* Updates the score board on screen */
 		updateScoreBoard (playerNumber, category, score);
 
+		/* Counts number of play */
 		numberOfPlay++;
 
-		pressEnter ();
+		if (numberOfPlay < 26)
+		{
+			/* Prompts current player that his turn has ended */
+			printMessageBox ("Your turn is over. Next player!", 
+				             "          Press <ENTER> to continue", playerNumber + 1);
+			pressEnter ();
+		}
+		
+		if (numberOfPlay == 26)	
+		{
+			/* All categories were selected, game is over */
+			isGameOver = TRUE;
+		}
 
-	} while (numberOfPlay < 26);
+	} while (!isGameOver);
+
+	/* Totals upper score and determines if player
+	   earned a bonus and prints the total score */
+	finalizeScoreBoard (scoreBoard);
+
+	/* Prompts user 'Thans for playing' */
+	printMessageBox ("THANKS FOR PLAYING YAHTZEE!", 
+		             "Press <ENTER> to return to MAIN MENU", 0);
+	pressEnter ();
+}
+
+
+/*************************************************************
+ * Function: setupGameBoard ()                               *
+ * Date Created: October 6, 2012                             *
+ * Date Last Modified: October 6, 2012                       *
+ * Description: This function sets up the board for the area *
+ *              for dices and categories to play with border *
+ * Input parameters: void                                    *
+ * Returns: void                                             *
+ * Preconditions: borderScreen (), printScreenBorder () and  *
+ *                gotoxy () must be defined                  *
+ * Postconditions: Board successfully set up                 *
+ *************************************************************/
+void setupGameBoard (void)
+{
+	printf ("\n\n");
+    printf ("             ROLL:0             CATEGORY            PLAYER 1   PLAYER 2\n\n");
+	printf ("                          [   ] ONES                [      ]   [      ]\n");
+	printf ("                          [   ] TWOS                [      ]   [      ]\n");
+	printf ("                          [   ] THREES              [      ]   [      ]\n");
+	printf ("                          [   ] FOURS               [      ]   [      ]\n");
+	printf ("                          [   ] FIVES               [      ]   [      ]\n");
+	printf ("                          [   ] SIXES               [      ]   [      ]\n");
+
+	printf ("                          [   ]  THREE OF A KIND    [      ]   [      ]\n");
+	printf ("                          [   ]  FOUR OF A KIND     [      ]   [      ]\n");
+	printf ("                          [   ]  FULL HOUSE(25)     [      ]   [      ]\n");
+	printf ("                          [   ]  SMALL STRAIGHT(30) [      ]   [      ]\n");
+	printf ("                          [   ]  LARGE STRAIGHT(40) [      ]   [      ]\n");
+	printf ("                          [   ]  YAHTZEE!(50)       [      ]   [      ]\n");
+	printf ("                          [   ]  CHANCE             [      ]   [      ]\n\n\n");
+
+	printf ("                                TOTAL               [      ]   [      ]\n");
+
+	/* dice and category borders */
+	borderScreen (20, 1, 
+		          78, 20);
+	/* Prompt border */
+	borderScreen (20, 20, 
+		          78, 23);
+	printScreenBorder ();
+
+	/* correct corner for category upper left */
+	gotoxy (20, 1);
+	printf ("%c", 203);
+
+	/* correct intersecting corner for category lower left */
+	gotoxy (20, 20);
+	printf ("%c", 204);
+
+	/* correct corner for prompt upper right */
+	gotoxy (78, 20);
+	printf ("%c", 185);
+
+	/* correct corner for prompt lower left */
+	gotoxy (20, 23);
+	printf ("%c", 202);
+}
+
+/*************************************************************
+ * Function: rollDice ()                                     *
+ * Date Created: October 6, 2012                             *
+ * Date Last Modified: October 6, 2012                       *
+ * Description: This function simulates rolling a dice and   *
+ *              retrieve random numbers for the array that   *
+ *              holds the values for the 5 dice              *
+ * Input parameters: void                                    *
+ * Returns: void                                             *
+ * Preconditions: getRandomNumber () must be defined         *
+ * Postconditions: Randomly selected values for the dice     *
+ *                 successfully retrieved                    *
+ *************************************************************/
+void rollDice (int dice [], int holdDice [])
+{
+	int i = 0;
+
+	for (i = 0; i < NUMBER_OF_DICE; i++)
+	{
+		if (!holdDice [i]) dice [i] = getRandomNumber (6);
+	}
+}
+
+/*************************************************************
+ * Function: drawDie ()                                      *
+ * Date Created: October 6, 2012                             *
+ * Date Last Modified: October 6, 2012                       *
+ * Description: This function draws a dice on the screen     *
+ *              specified with the face value and top left   *
+ *              x and y position                             *
+ * Input parameters: face value of a die and top left x and  *
+ *                   y position                              *
+ * Returns: void                                             *
+ * Preconditions: die<NAME> () functions are defined         *
+ * Postconditions: A specified die is drawn on the screen    *
+ *************************************************************/
+void drawDie (int dieValue, int x, int y)
+{
+	switch (dieValue)
+	{
+		case 0:
+			dieBlank (x, y);
+			break;
+
+		case 1:
+			dieOne (x, y);
+			break;
+
+		case 2:
+			dieTwo (x, y);
+			break;
+
+		case 3:
+			dieThree (x, y);
+			break;
+
+		case 4:
+			dieFour (x, y);
+			break;
+
+		case 5:
+			dieFive (x, y);
+			break;
+
+		case 6:
+			dieSix (x, y);
+			break;
+	}
+}
+
+/*************************************************************
+ * Function: chooseDiceToHold ()                             *
+ * Date Created: October 6, 2012                             *
+ * Date Last Modified: October 7, 2012                       *
+ * Description: This function lets user choose what dice to  *
+ *              hold or unhold                               *
+ * Input parameters: flag for dice to hold or unhold         *
+ * Returns: void                                             *
+ * Preconditions: gotoxy () must be defined                  *
+ * Postconditions: Dice could either be held or not          *
+ *************************************************************/
+void chooseDiceToHold (int holdDice [])
+{
+	int cursorX = 15,
+		cursorY = 4;
+	char ch = '\0';
+
+	gotoxy (cursorX, cursorY);
+
+	do {
+		ch = getch ();
+		switch(ch) 
+		{ 
+			case ARROW_KEY_UP: 
+				/* UP arrow key is pressed */
+				if (cursorY == 4) 
+				{
+					cursorY = cursorY + 16;
+					gotoxy (cursorX, cursorY);
+				}	
+				else if (cursorY > 4) 
+				{
+					cursorY -= 4;
+					gotoxy (cursorX, cursorY);
+				} 		
+				break;
+
+			case ARROW_KEY_DOWN: 
+				/* DOWN arrow key is pressed */
+				if (cursorY < 20) 
+				{
+					cursorY += 4;
+					gotoxy (cursorX, cursorY);
+				} 
+				else if (cursorY == 20) 
+				{
+					cursorY = 4;
+					gotoxy (cursorX, cursorY);
+				}
+				break; 
+
+			case SPACE_BAR:
+				/* SPACEBAR key is pressed */
+				if (!(holdDice [(cursorY / 4) - 1]))
+				{
+					printf ("X");
+					gotoxy (cursorX, cursorY);
+				}
+				else
+				{
+					printf (" ");
+					gotoxy (cursorX, cursorY);
+				}
+
+				holdDice [(cursorY / 4) - 1] = !(holdDice [(cursorY / 4) - 1]);
+				break;
+		}
+	} while (ch != 13);
+}
+
+/*************************************************************
+ * Function: updateDiceArea ()                               *
+ * Date Created: October 6, 2012                             *
+ * Date Last Modified: October 7, 2012                       *
+ * Description: This function updates the dices on screen    *
+ *              based on the new values of the dice while    *
+ *              considering if member wants to hold some of  *
+ *              the dice                                     *
+ * Input parameters: value of the dice, what dice player     *
+ *                   wants to hold and number of rolls       *
+ * Returns: void                                             *
+ * Preconditions: gotoxy () must be defined                  *
+ * Postconditions: Dice area on screen updated               *
+ *************************************************************/
+void updateDiceArea (int dice[], int holdDice[], int rolls)
+{
+	int i = 0;
+
+	for (i = 0; i < NUMBER_OF_DICE; i++)
+	{
+		if (!holdDice [i]) drawDie (dice [i], 3, 2 + (i * 4));
+	}
+
+	gotoxy (18, 2);
+	printf ("%d", rolls);
+}
+
+/*************************************************************
+ * Function: finalizeScoreBoard ()                           *
+ * Date Created: October 16, 2012                            *
+ * Date Last Modified: October 16, 2012                      *
+ * Description: This function updates scoreboard with the    *
+ *              upper score total, if player earns bonus and *
+ *              prints it on screen and each player's total  *
+ *              score on screen                              *
+ * Input parameters: score for both players for every        *
+ *                   category                                *
+ * Returns: void                                             *
+ * Preconditions: gotoxy () must be defined                  *
+ * Postconditions: Scoreboard completely filled with scores  *
+ *************************************************************/
+void finalizeScoreBoard (int scoreBoard [][14])
+{
+	int playerNumber = 0, i = 0;
 
 	gotoxy (40, 17);
 	printf ("UPPER SCORE:");
@@ -173,16 +453,36 @@ void startNewGame (void)
 	printf ("%4d", scoreBoard [0][13]);
 	gotoxy (54 + 11, 19);
 	printf ("%4d", scoreBoard [1][13]);
+}
 
+/*************************************************************
+ * Function: printMessageBox ()                              *
+ * Date Created: October 15, 2012                            *
+ * Date Last Modified: October 15, 2012                      *
+ * Description: This function updates the message box        *
+ * Input parameters: message for line 1 and line 2 and a     *
+ *                   number that either specifies the player *
+ *                   or 0 for special message                *
+ * Returns: void                                             *
+ * Preconditions: gotoxy () must be defined                  *
+ * Postconditions: Message box updated                       *
+ *************************************************************/
+void printMessageBox (char msgLine1[], char msgLine2[], int number)
+{
+	/* Clears message box */
 	gotoxy (21, 21);
 	printf ("                                                         ");
 	gotoxy (21, 22);
 	printf ("                                                         ");
+
+	/* Prints message */
 	gotoxy (21, 21);
-	printf ("THANKS FOR PLAYING YAHTZEE!");
+	if (number == 0) 
+		printf ("%s", msgLine1);
+	else 
+		printf ("PLAYER %d: %s", number, msgLine1);
 	gotoxy (21, 22);
-	printf ("Press <ENTER> to return to MAIN MENU");
-	pressEnter ();
+	printf ("%s", msgLine2);
 }
 
 /*************************************************************
@@ -296,6 +596,8 @@ void computeCategoryScore (int dice [], int category, int *score)
 		case FOURS:
 		case FIVES:
 		case SIXES:
+			/* Just the sum of the dice with the same 
+			   value of the category selected */
 			for (i = 0; i < NUMBER_OF_DICE; i++)
 			{
 				if (dice [i] == category)
@@ -344,10 +646,9 @@ void computeCategoryScore (int dice [], int category, int *score)
  *              rolled dice                                  *
  * Input parameters: dice array, category, score as result   *
  * Returns: void                                             *
- * Preconditions: system () and gotoxy () must be defined    *
- *                and Windows.h must be included             *
- * Postconditions: score value is updated from the calling   *
- *                 function.                                 *
+ * Preconditions: none                                       *
+ * Postconditions: Returned a boolean value if category was  *
+ *                 true or false                             *
  *************************************************************/
 int checkCategory (int dice [], int category)
 {
@@ -357,20 +658,13 @@ int checkCategory (int dice [], int category)
 
 	for (i = 0; i < NUMBER_OF_DICE; i++)
 	{
+		/* Tracks die with the same value */
 		checker [dice [i] - 1]++;
-		/*switch (dice [i])
-		{
-			case 1: checker [0]++; break;
-			case 2: checker [1]++; break;
-			case 3: checker [2]++; break;
-			case 4: checker [3]++; break;
-			case 5: checker [4]++; break;
-			case 6: checker [5]++; break;
-		}*/
 	}
 
 	if (category == THREE_OF_A_KIND) 
 	{
+		/* Three of a Kind selected */
 		for (i = 0; i < 6; i++) 
 		{
 			if (checker[i] >= 3) 
@@ -382,6 +676,7 @@ int checkCategory (int dice [], int category)
 	} 
 	else if (category == FOUR_OF_A_KIND) 
 	{
+		/* Four of a Kind selected */
 		for (i = 0; i < 6; i++) 
 		{
 			if (checker[i] >= 4) 
@@ -393,6 +688,7 @@ int checkCategory (int dice [], int category)
 	} 
 	else if (category == YAHTZEE) 
 	{
+		/* Yahtzee selected */
 		for (i = 0; i < 6; i++) 
 		{
 			if (checker[i] == 5) 
@@ -404,6 +700,7 @@ int checkCategory (int dice [], int category)
 	} 
 	else if (category == FULL_HOUSE) 
 	{
+		/* Full house selected */
 		for (i = 0; i < 6; i++) 
 		{
 			if (checker[i] == 3 || checker[i] == 2) 
@@ -421,6 +718,7 @@ int checkCategory (int dice [], int category)
 	} 
 	else if (category == LARGE_STRAIGHT) 
 	{
+		/* Large straight selected */
 		if (checker[0] == 0) 
 		{
 			for (i = 1; i < 6; i++) 
@@ -448,6 +746,7 @@ int checkCategory (int dice [], int category)
 	} 
 	else if (category == SMALL_STRAIGHT) 
 	{
+		/* Small straight selected */
 		if ((checker[0] == 0 && checker[1] == 0) ||
 			(checker[0] == 1 && checker[1] == 0)) 
 		{
@@ -490,6 +789,17 @@ int checkCategory (int dice [], int category)
 	return isACategory;
 }
 
+/*************************************************************
+ * Function: chooseCategory ()                               *
+ * Date Created: October 6, 2012                             *
+ * Date Last Modified: October 7, 2012                       *
+ * Description: This function lets user choose a category on *
+ *              screen using arrow keys                      *
+ * Input parameters: address to a category                   *
+ * Returns: void                                             *
+ * Preconditions: gotoxy () must be defined                  *
+ * Postconditions: A category is selected by user            *
+ *************************************************************/
 void chooseCategory (int *category)
 {
 	int cursorX = 28,
@@ -555,205 +865,7 @@ void chooseCategory (int *category)
 	printf (" ");
 }
 
-void chooseDiceToHold (int holdDice [])
-{
-	int cursorX = 15,
-		cursorY = 4;
-	char ch = '\0';
 
-	gotoxy (cursorX, cursorY);
-
-	do {
-		ch = getch ();
-		switch(ch) 
-		{ 
-			case ARROW_KEY_UP: 
-				/* UP arrow key is pressed */
-				if (cursorY == 4) 
-				{
-					cursorY = cursorY + 16;
-					gotoxy (cursorX, cursorY);
-				}	
-				else if (cursorY > 4) 
-				{
-					cursorY -= 4;
-					gotoxy (cursorX, cursorY);
-				} 		
-				break;
-
-			case ARROW_KEY_DOWN: 
-				/* DOWN arrow key is pressed */
-				if (cursorY < 20) 
-				{
-					cursorY += 4;
-					gotoxy (cursorX, cursorY);
-				} 
-				else if (cursorY == 20) 
-				{
-					cursorY = 4;
-					gotoxy (cursorX, cursorY);
-				}
-				break; 
-
-			case SPACE_BAR:
-				/* SPACEBAR key is pressed */
-				if (!(holdDice [(cursorY / 4) - 1]))
-				{
-					printf ("X");
-					gotoxy (cursorX, cursorY);
-				}
-				else
-				{
-					printf (" ");
-					gotoxy (cursorX, cursorY);
-				}
-
-				holdDice [(cursorY / 4) - 1] = !(holdDice [(cursorY / 4) - 1]);
-				break;
-		}
-	} while (ch != 13);
-}
-
-void updateDiceArea (int dice[], int holdDice[], int rolls)
-{
-	int i = 0;
-
-	for (i = 0; i < NUMBER_OF_DICE; i++)
-	{
-		if (!holdDice [i]) drawDie (dice [i], 3, 2 + (i * 4));
-	}
-
-	gotoxy (18, 2);
-	printf ("%d", rolls);
-}
-
-/*************************************************************
- * Function: drawDie ()                                      *
- * Date Created: October 6, 2012                             *
- * Date Last Modified: October 6, 2012                       *
- * Description: This function draws a dice on the screen     *
- *              specified with the face value and top left   *
- *              x and y position                             *
- * Input parameters: face value of a die and top left x and  *
- *                   y position                              *
- * Returns: void                                             *
- * Preconditions: die<NAME> () functions are defined         *
- * Postconditions: A specified die is drawn on the screen    *
- *************************************************************/
-void drawDie (int dieValue, int x, int y)
-{
-	switch (dieValue)
-	{
-		case 0:
-			dieBlank (x, y);
-			break;
-
-		case 1:
-			dieOne (x, y);
-			break;
-
-		case 2:
-			dieTwo (x, y);
-			break;
-
-		case 3:
-			dieThree (x, y);
-			break;
-
-		case 4:
-			dieFour (x, y);
-			break;
-
-		case 5:
-			dieFive (x, y);
-			break;
-
-		case 6:
-			dieSix (x, y);
-			break;
-	}
-}
-
-/*************************************************************
- * Function: rollDice ()                                     *
- * Date Created: October 6, 2012                             *
- * Date Last Modified: October 6, 2012                       *
- * Description: This function simulates rolling a dice and   *
- *              retrieve random numbers for the array that   *
- *              holds the values for the 5 dice              *
- * Input parameters: void                                    *
- * Returns: void                                             *
- * Preconditions: getRandomNumber () must be defined         *
- * Postconditions: Randomly selected values for the dice     *
- *                 successfully retrieved                    *
- *************************************************************/
-void rollDice (int dice [], int holdDice [])
-{
-	int i = 0;
-
-	for (i = 0; i < NUMBER_OF_DICE; i++)
-	{
-		if (!holdDice [i]) dice [i] = getRandomNumber (6);
-	}
-}
-
-/*************************************************************
- * Function: setupGameBoard ()                               *
- * Date Created: October 6, 2012                             *
- * Date Last Modified: October 6, 2012                       *
- * Description: This function sets up the board for the area *
- *              for dices and categories to play with border *
- * Input parameters: void                                    *
- * Returns: void                                             *
- * Preconditions: borderScreen (), printScreenBorder () and  *
- *                gotoxy () must be defined                  *
- * Postconditions: Board successfully set up                 *
- *************************************************************/
-void setupGameBoard (void)
-{
-	printf ("\n\n");
-    printf ("             ROLL:0             CATEGORY            PLAYER 1   PLAYER 2\n\n");
-	printf ("                          [   ] ONES                [      ]   [      ]\n");
-	printf ("                          [   ] TWOS                [      ]   [      ]\n");
-	printf ("                          [   ] THREES              [      ]   [      ]\n");
-	printf ("                          [   ] FOURS               [      ]   [      ]\n");
-	printf ("                          [   ] FIVES               [      ]   [      ]\n");
-	printf ("                          [   ] SIXES               [      ]   [      ]\n");
-
-	printf ("                          [   ]  THREE OF A KIND    [      ]   [      ]\n");
-	printf ("                          [   ]  FOUR OF A KIND     [      ]   [      ]\n");
-	printf ("                          [   ]  FULL HOUSE(25)     [      ]   [      ]\n");
-	printf ("                          [   ]  SMALL STRAIGHT(30) [      ]   [      ]\n");
-	printf ("                          [   ]  LARGE STRAIGHT(40) [      ]   [      ]\n");
-	printf ("                          [   ]  YAHTZEE!(50)       [      ]   [      ]\n");
-	printf ("                          [   ]  CHANCE             [      ]   [      ]\n\n\n");
-
-	printf ("                                TOTAL               [      ]   [      ]\n");
-
-	/* dice and category borders */
-	borderScreen (20, 1, 
-		          78, 20);
-	/* Prompt border */
-	borderScreen (20, 20, 
-		          78, 23);
-	printScreenBorder ();
-
-	/* correct corner for category upper left */
-	gotoxy (20, 1);
-	printf ("%c", 203);
-
-	/* correct intersecting corner for category lower left */
-	gotoxy (20, 20);
-	printf ("%c", 204);
-
-	/* correct corner for prompt upper right */
-	gotoxy (78, 20);
-	printf ("%c", 185);
-
-	/* correct corner for prompt lower left */
-	gotoxy (20, 23);
-	printf ("%c", 202);
-}
 
 /*************************************************************
  * Function: printGameRules ()                               *

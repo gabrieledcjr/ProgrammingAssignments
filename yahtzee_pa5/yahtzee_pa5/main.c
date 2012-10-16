@@ -55,6 +55,7 @@ int main (void)
 				printGoodbye ();    /* prints a goodbye message */
 				break;
 		}
+
 	} while (menu != EXIT_GAME);
 
 	return 0;
