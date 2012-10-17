@@ -15,7 +15,7 @@
 
 #include <stdio.h>
 #include <Windows.h>	/* system() */
-#include <conio.h>		/* getch() */
+#include <conio.h>      /* getch() */
 
 #define TRUE  1         /* boolean value for true */
 #define FALSE 0         /* boolean value for false */
@@ -36,9 +36,9 @@
 #define ARROW_KEY_DOWN  80      /* value for arrow key down */
 #define SPACE_BAR       32      /* value for space bar */
 
-#define CURSOR_SYMBOL  219		/* ASCII value of a block */
+#define CURSOR_SYMBOL  219      /* ASCII value of a block */
 
-#define NUMBER_OF_DICE  5		/* defines number of dice used */
+#define NUMBER_OF_DICE  5       /* defines number of dice used */
 
 /* Categories */
 #define ONES              1 
@@ -82,7 +82,7 @@ void printScreenBorder (void);
 void printMenu (int x, int y);
 void printTitle (int x, int y);
 void borderScreen (int upperLeftCornerX, int upperLeftCornerY,
-				   int lowerRightCornerX, int lowerRightCornerY);
+                   int lowerRightCornerX, int lowerRightCornerY);
 
 void gotoxy(int x, int y);
 void pressEnter (void);
