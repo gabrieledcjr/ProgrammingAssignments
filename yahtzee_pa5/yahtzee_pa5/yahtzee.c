@@ -212,12 +212,12 @@ void setupGameBoard (void)
 
 	printf ("                                TOTAL               [      ]   [      ]\n");
 
-	/* dice and category borders */
-	borderScreen (20, 1, 
-		          78, 20);
-	/* Prompt border */
-	borderScreen (20, 20, 
-		          78, 23);
+	/* 'Dice and category' borders */
+	borderScreen (20, 1, 78, 20);
+	/* 'Prompt' border */
+	borderScreen (20, 20, 78, 23);
+
+	/* 'Screen' border */
 	printScreenBorder ();
 
 	/* correct corner for category upper left */
@@ -1229,12 +1229,12 @@ void gotoxy(int x, int y)
     HANDLE stdOutput;
     COORD pos;
 
-    stdOutput = GetStdHandle(STD_OUTPUT_HANDLE);
+    stdOutput = GetStdHandle (STD_OUTPUT_HANDLE);
 
     pos.X = x;
     pos.Y = y;
 
-    SetConsoleCursorPosition(stdOutput, pos);
+    SetConsoleCursorPosition (stdOutput, pos);
 }
 
 /*************************************************************
