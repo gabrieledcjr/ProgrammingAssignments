@@ -26,21 +26,21 @@
  *************************************************************/
 void startNewGame (void)
 {
-	int dice[5] = {0};              /* tracks dice values every play */
-	int holdDice[5] = {0};          /* tracks what dice player wants to hold or unhold */
+	int dice[5] = {0};                      /* tracks dice values every play */
+	int holdDice[5] = {0};                  /* tracks what dice player wants to hold or unhold */
 
 	int categorySelected [2][13] = {{0}};   /* tracks the category already selected */
 	int scoreBoard [2][14] = {{0}};         /* tracks the score for every category */
 
-	int i = 0;                      /* generic counter for loops */
-	int numberOfRolls = 0;			/* tracks number of rolls */
-	int playerNumber = 1;			/* identifies which player is playing */
-	int category = 0;				/* category chosen by player on a play */
-	int score = 0;                  /* score of a category chosen by a player on a play */
-	int numberOfPlay = 0;           /* tracks number of play */
-	int isGameOver = FALSE;         /* a flag that determines if game has ended */
+	int i = 0;                              /* generic counter for loops */
+	int numberOfRolls = 0;                  /* tracks number of rolls */
+	int playerNumber = 1;                   /* identifies which player is playing */
+	int category = 0;                       /* category chosen by player on a play */
+	int score = 0;                          /* score of a category chosen by a player on a play */
+	int numberOfPlay = 0;                   /* tracks number of play */
+	int isGameOver = FALSE;                 /* a flag that determines if game has ended */
 
-	char isRollAgain = '\0';        /* a flag that determines if player wants to roll dice again */
+	char isRollAgain = '\0';                /* a flag that determines if player wants to roll dice again */
 
 	/* clears the screen */
 	system ("cls");	
@@ -65,7 +65,7 @@ void startNewGame (void)
 		/* alternate players */
 		playerNumber = !playerNumber;	
 
-		/* resets the dice are to blank */
+		/* resets the dice area to blank */
 		updateDiceArea (dice, holdDice, numberOfRolls);
             
 		/* Prompts user to press ENTER key to roll the dice */
@@ -89,7 +89,7 @@ void startNewGame (void)
 
 			/* Prompts if player wants to hold or unhold a die  */
 			printMessageBox ("Press <SPACEBAR> to hold or unhold a die", 
-				             "          Press <ENTER> to roll the dice", playerNumber + 1);
+                             "          Press <ENTER> to roll the dice", playerNumber + 1);
 
 			/* Waits for user input to what dice to hold or unhold */
 			chooseDiceToHold (holdDice);
@@ -107,7 +107,7 @@ void startNewGame (void)
 				{
 					/* Alerts user at the message box for invalid input */
 					printMessageBox ("Roll Again? [Y/N]:", 
-						             "          Invalid input!", playerNumber + 1);
+                                     "          Invalid input!", playerNumber + 1);
 				}
 				else break; /* breaks out of loop if user input is valid */
 
@@ -130,7 +130,7 @@ void startNewGame (void)
 			{
 				/* Alets user at the message box that category has already been selected */
 				printMessageBox ("ERROR! Category already selected", 
-					             "          Press <ENTER> to select a new category", playerNumber + 1);
+                                 "          Press <ENTER> to select a new category", playerNumber + 1);
 				pressEnter ();
 			}
 			else break;
@@ -156,7 +156,7 @@ void startNewGame (void)
 		{
 			/* Prompts current player that his turn has ended */
 			printMessageBox ("Your turn is over. Next player!", 
-				             "          Press <ENTER> to continue", playerNumber + 1);
+                             "          Press <ENTER> to continue", playerNumber + 1);
 			pressEnter ();
 		}
 		
@@ -174,7 +174,7 @@ void startNewGame (void)
 
 	/* Prompts user 'Thans for playing' */
 	printMessageBox ("THANKS FOR PLAYING YAHTZEE!", 
-		             "Press <ENTER> to return to MAIN MENU", 0);
+                     "Press <ENTER> to return to MAIN MENU", 0);
 	pressEnter ();
 }
 
@@ -194,7 +194,7 @@ void startNewGame (void)
 void setupGameBoard (void)
 {
 	printf ("\n\n");
-    printf ("             ROLL:0             CATEGORY            PLAYER 1   PLAYER 2\n\n");
+	printf ("             ROLL:0             CATEGORY            PLAYER 1   PLAYER 2\n\n");
 	printf ("                          [   ] ONES                [      ]   [      ]\n");
 	printf ("                          [   ] TWOS                [      ]   [      ]\n");
 	printf ("                          [   ] THREES              [      ]   [      ]\n");
@@ -424,7 +424,7 @@ void finalizeScoreBoard (int scoreBoard [][14])
 
 	gotoxy (40, 17);
 	printf ("UPPER SCORE:");
-    gotoxy (40, 18);
+	gotoxy (40, 18);
 	printf ("      BONUS:");
 
 	for (playerNumber = 0; playerNumber < 2; playerNumber++)
@@ -803,7 +803,7 @@ int checkCategory (int dice [], int category)
 void chooseCategory (int *category)
 {
 	int cursorX = 28,
-		cursorY = 4;
+        cursorY = 4;
 	char ch = '\0';
 
 	gotoxy (cursorX, cursorY);
@@ -905,10 +905,10 @@ void printGameRules (void)
 	system ("cls");
 
 	printf ("\n\n");
-    printf ("         NAME       |           COMBINATION          |          SCORE\n");
+	printf ("         NAME       |           COMBINATION          |          SCORE\n");
 	printf ("   -----------------+--------------------------------+-----------------------\n");
-    printf ("   Three-of-a-kind  | Three dice with the same face  | Sum of all face values\n"); 
-    printf ("                    |                                |     on the 5 dice     \n");
+	printf ("   Three-of-a-kind  | Three dice with the same face  | Sum of all face values\n"); 
+	printf ("                    |                                |     on the 5 dice     \n");
 	printf ("   -----------------+--------------------------------+-----------------------\n");
 	printf ("   Four-of-a-kind   |  Four dice with the same face  | Sum of all face values\n");
 	printf ("                    |                                |     on the 5 dice     \n");
@@ -917,7 +917,7 @@ void printGameRules (void)
 	printf ("   -----------------+--------------------------------+-----------------------\n");
 	printf ("   Small straight   |     A sequence of four dice    |            30         \n");
 	printf ("   -----------------+--------------------------------+-----------------------\n");
-    printf ("   Large straight   |     A sequence of five dice    |            40         \n");
+	printf ("   Large straight   |     A sequence of five dice    |            40         \n");
 	printf ("   -----------------+--------------------------------+-----------------------\n");
 	printf ("\n\n");
 	printf ("                        << Press <ENTER> to continue... >>                     ");
@@ -926,9 +926,9 @@ void printGameRules (void)
 
 	system ("cls");
 	printf ("\n\n");
-    printf ("         NAME       |           COMBINATION          |          SCORE\n");
+	printf ("         NAME       |           COMBINATION          |          SCORE\n");
 	printf ("   -----------------+--------------------------------+-----------------------\n");
-    printf ("   Yahtzee (think   |  Five dice with the same face  |            50         \n");
+	printf ("   Yahtzee (think   |  Five dice with the same face  |            50         \n");
 	printf ("   five-of-a-kind)  |                                |                       \n");
 	printf ("   -----------------+--------------------------------+-----------------------\n");
 	printf ("   Chance           |  May be used for any sequence  | Sum of all face values\n");
@@ -961,7 +961,7 @@ void printGoodbye (void)
 	gotoxy (((SCREEN_BORDER_LOWER_X - SCREEN_BORDER_UPPER_X) / 2) - 16,
 		     (SCREEN_BORDER_LOWER_Y - SCREEN_BORDER_UPPER_Y) / 2);
 	printf ("Thanks for playing Yahtzee! Goodbye!");
-    printScreenBorder ();
+	printScreenBorder ();
 	pressEnter ();
 	system ("cls");
 }
@@ -995,8 +995,8 @@ void init (void)
 int chooseMenuItem (void)
 {
 	int cursorX = MENU_X + 2,
-		cursorY = MENU_Y,
-		menuItem = START_GAME;
+        cursorY = MENU_Y,
+        menuItem = START_GAME;
 	char ch = '\0';
 
 	gotoxy (cursorX, cursorY);
@@ -1086,13 +1086,13 @@ void printMainScreen (void)
 	/* prints main title on screen */
 	
 	printTitle (((SCREEN_BORDER_LOWER_X - SCREEN_BORDER_UPPER_X) / 2) - 27, 
-		          SCREEN_BORDER_UPPER_Y + 2);
+                  SCREEN_BORDER_UPPER_Y + 2);
 
 	/* draws border for the menu */
 	borderScreen (((SCREEN_BORDER_LOWER_X - SCREEN_BORDER_UPPER_X) / 2) - 11, 
-		            SCREEN_BORDER_UPPER_Y + 9, 
-		          ((SCREEN_BORDER_LOWER_X - SCREEN_BORDER_UPPER_X) / 2) + 17, 
-				    SCREEN_BORDER_UPPER_Y + 15);
+                    SCREEN_BORDER_UPPER_Y + 9, 
+                  ((SCREEN_BORDER_LOWER_X - SCREEN_BORDER_UPPER_X) / 2) + 17, 
+                    SCREEN_BORDER_UPPER_Y + 15);
 
 	/* prints menu on screen */
 	printMenu (MENU_X, MENU_Y);
@@ -1112,7 +1112,7 @@ void printScreenBorder (void)
 {
 	/* draws border for the window */
 	borderScreen (SCREEN_BORDER_UPPER_X, SCREEN_BORDER_UPPER_Y, 
-		          SCREEN_BORDER_LOWER_X, SCREEN_BORDER_LOWER_Y);
+                  SCREEN_BORDER_LOWER_X, SCREEN_BORDER_LOWER_Y);
 }
 
 /*************************************************************
@@ -1155,7 +1155,7 @@ void printTitle (int x, int y)
 	gotoxy (x, y);
 	printf ("XX  XX    XX    XX  XX  XXXXXX  XXXXXX  XXXXXX  XXXXXX  XX");
 	gotoxy (x, y + 1);
-    printf ("XX  XX  XX  XX  XX  XX    XX        X   XX      XX      XX");
+	printf ("XX  XX  XX  XX  XX  XX    XX        X   XX      XX      XX");
 	gotoxy (x, y + 2);
 	printf (" XXXX   XXXXXX  XXXXXX    XX      XX    XXXX    XXXX    XX");
 	gotoxy (x, y + 3);
@@ -1296,7 +1296,7 @@ int getRandomNumber (int maxNumber)
 void dieBlank (int x, int y)
 {
 	gotoxy (x, y);
-    printf ("+-------+");
+	printf ("+-------+");
 	gotoxy (x, y + 1);
 	printf ("|       |");
 	gotoxy (x, y + 2);
@@ -1320,7 +1320,7 @@ void dieBlank (int x, int y)
 void dieOne (int x, int y)
 {
 	gotoxy (x, y);
-    printf ("+-------+");
+	printf ("+-------+");
 	gotoxy (x, y + 1);
 	printf ("|       |");
 	gotoxy (x, y + 2);
@@ -1328,7 +1328,7 @@ void dieOne (int x, int y)
 	gotoxy (x, y + 3);
 	printf ("|       |");
 	gotoxy (x, y + 4);
-    printf ("+-------+");
+	printf ("+-------+");
 }
 
 /*************************************************************
@@ -1344,7 +1344,7 @@ void dieOne (int x, int y)
 void dieTwo (int x, int y)
 {
 	gotoxy (x, y);
-    printf ("+-------+");
+	printf ("+-------+");
 	gotoxy (x, y + 1);
 	printf ("|     o |");
 	gotoxy (x, y + 2);
@@ -1352,7 +1352,7 @@ void dieTwo (int x, int y)
 	gotoxy (x, y + 3);
 	printf ("| o     |");
 	gotoxy (x, y + 4);
-    printf ("+-------+");
+	printf ("+-------+");
 }
 
 /*************************************************************
@@ -1368,7 +1368,7 @@ void dieTwo (int x, int y)
 void dieThree (int x, int y)
 {
 	gotoxy (x, y);
-    printf ("+-------+");
+	printf ("+-------+");
 	gotoxy (x, y + 1);
 	printf ("|     o |");
 	gotoxy (x, y + 2);
@@ -1376,7 +1376,7 @@ void dieThree (int x, int y)
 	gotoxy (x, y + 3);
 	printf ("| o     |");
 	gotoxy (x, y + 4);
-    printf ("+-------+");
+	printf ("+-------+");
 }
 
 /*************************************************************
@@ -1392,7 +1392,7 @@ void dieThree (int x, int y)
 void dieFour (int x, int y)
 {
 	gotoxy (x, y);
-    printf ("+-------+");
+	printf ("+-------+");
 	gotoxy (x, y + 1);
 	printf ("| o   o |");
 	gotoxy (x, y + 2);
@@ -1400,7 +1400,7 @@ void dieFour (int x, int y)
 	gotoxy (x, y + 3);
 	printf ("| o   o |");
 	gotoxy (x, y + 4);
-    printf ("+-------+");
+	printf ("+-------+");
 }
 
 /*************************************************************
@@ -1416,7 +1416,7 @@ void dieFour (int x, int y)
 void dieFive (int x, int y)
 {
 	gotoxy (x, y);
-    printf ("+-------+");
+	printf ("+-------+");
 	gotoxy (x, y + 1);
 	printf ("| o   o |");
 	gotoxy (x, y + 2);
@@ -1424,7 +1424,7 @@ void dieFive (int x, int y)
 	gotoxy (x, y + 3);
 	printf ("| o   o |");
 	gotoxy (x, y + 4);
-    printf ("+-------+");
+	printf ("+-------+");
 }
 
 /*************************************************************
@@ -1440,7 +1440,7 @@ void dieFive (int x, int y)
 void dieSix (int x, int y)
 {
 	gotoxy (x, y);
-    printf ("+-------+");
+	printf ("+-------+");
 	gotoxy (x, y + 1);
 	printf ("| o   o |");
 	gotoxy (x, y + 2);
@@ -1448,5 +1448,5 @@ void dieSix (int x, int y)
 	gotoxy (x, y + 3);
 	printf ("| o   o |");
 	gotoxy (x, y + 4);
-    printf ("+-------+");
+	printf ("+-------+");
 }
