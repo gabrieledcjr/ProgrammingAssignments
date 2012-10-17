@@ -523,6 +523,7 @@ void updateScoreBoard (int playerNumber, int category, int score)
 			gotoxy (cursorX + (playerNumber * 11), cursorY + FOURS);
 			printf ("%4d", score);
 			break;
+
 		case FIVES:
 			gotoxy (cursorX + (playerNumber * 11), cursorY + FIVES);
 			printf ("%4d", score);
